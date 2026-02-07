@@ -15,3 +15,11 @@ We want the thinnest and lightest implementation possible of iceberg for dev pur
 ## Decision Outcome
 
 For development purposes - files on disk is simple. the rest can be built as plugins if they're needed.
+
+### File Layout
+
+{basePath}/{tenant}/namespaces/{ns}/properties.json
+{basePath}/{tenant}/namespaces/{ns}/tables/{table}/metadata/v{n}.metadata.json
+{basePath}/{tenant}/namespaces/{ns}/tables/{table}/data/
+
+Blob read/write streams directly through ThinIce endpoints (no presigned URLs).

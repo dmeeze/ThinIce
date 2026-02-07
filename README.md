@@ -30,3 +30,12 @@ Meeze.ThinIce.Iceberg.LocalDev (provider)
 Meeze.ThinIce.Dev.Iceberg.S3 (provider)
   - NOT IMPLEMENTED YET
   - TODO stub intended as a basis to implement iceberg using IAM Role, S3 + Glue
+
+API (minimum viable subset of Iceberg REST catalog):
+  POST /v1/oauth/tokens    - token exchange (form-encoded)
+  GET  /v1/config           - catalog configuration
+  GET/POST/DELETE /v1/namespaces         - list, create, drop
+  GET /v1/namespaces/{ns}                - load namespace
+  GET/POST/DELETE /v1/namespaces/{ns}/tables      - list, create, drop
+  GET /v1/namespaces/{ns}/tables/{table}          - load table
+  GET/PUT /v1/data/{path}                - blob streaming read/write

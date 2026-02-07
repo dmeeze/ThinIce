@@ -21,7 +21,13 @@ querying AWS S3, we could desire to use an AWsv4 signed JWT as an IAM with servi
 Chosen option: We issue our own tokens seen by users and used in the App, and each provider implementation is 
 responsible for issuing and using appropriate underlying tokens or auth methods.
 
-TODO : Middleware sequence.  Identity options. Provider routing.
+### Token Flow
+
+- POST /v1/oauth/tokens (form-encoded, per Iceberg spec) — provider exchanges client_id/client_secret for bearer token
+- all other endpoints require Authorization: Bearer {token}
+- auth middleware validates token via IAuthProvider, extracts tenant+user, sets scoped TenantContext
+- GET /v1/config is unauthenticated (Iceberg clients call it before auth)
+- LocalDev: static tokens from config, format token:Tenant:user@email
 
 ### Consequences
 

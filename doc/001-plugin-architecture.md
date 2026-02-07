@@ -17,6 +17,9 @@ By proxing multiple back-end services (S3, Snowflake, etc), in a tenanted fashio
 
 - Use IOptions at app start time to register and configure each provider with DI
 
-TODO : Middleware sequence.  Identity options. Provider routing.
+### Middleware and Routing
 
-
+- auth middleware runs first, validates bearer token, sets scoped TenantContext (tenant + user)
+- each provider registers IIcebergCatalog, IIcebergStorage, IAuthProvider via DI
+- all tenants use the same provider instance; tenant isolation is within the provider (path-prefix for LocalDev)
+- multi-provider routing (different backend per tenant) deferred — single provider active at startup for now
