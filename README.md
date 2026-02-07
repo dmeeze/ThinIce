@@ -4,7 +4,7 @@ Apache iceberg is a big data system which is effectively a set of columnar data 
 data's in those files. You can get one off the shelf from many vendors and providers, but for local dev that can be
 annoying.
 
-So this is a simple local mock for multitenanted iceberg.  This means the user gets a token, and sees an iceberg 
+So this is a simple local mock/proxy for multitenanted iceberg.  This means the user gets a token, and sees an iceberg 
 limited only to the tenant they're using (eg, MyCompany).  However under the covers, we can use flat file storage 
 or service role IAM to S3 etc without having to link the user identity to the upstream provider directly.
 
