@@ -1,41 +1,61 @@
-# ThinIce - Standalone Iceberg and OICD
+# ThinIce - Standalone Iceberg and OIDC
 
-Apache iceberg is a big data system which is effectively a set of columnar data files and a metadata catalog of what 
+Apache Iceberg is a big data system which is effectively a set of columnar data files and a metadata catalog of what
 data's in those files. You can get one off the shelf from many vendors and providers, but for local dev that can be
 annoying.
 
-So this is a simple local mock/proxy for multitenanted iceberg.  This means the user gets a token, and sees an iceberg 
-limited only to the tenant they're using (eg, MyCompany).  However under the covers, we can use flat file storage 
+So this is a simple local mock/proxy for multitenanted Iceberg. This means the user gets a token, and sees an Iceberg
+limited only to the tenant they're using (eg, MyCompany). However under the covers, we can use flat file storage
 or service role IAM to S3 etc without having to link the user identity to the upstream provider directly.
 
 This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 
-Structure:
-Meeze.ThinIce.App (api service app)
-  - asp.net web service.  implements controllers for iceberg rest catalog and blob read/write paths.
-  - pass-through streaming async layer to underlying providers
-Meeze.ThinIce.Auth (adaptor)
-  - auth token proxy. outside callers see a single token without ever knowing what the inner provider is.
-  - S3 access tokens, for example, never leave ThinIce.
-  - relies on plugin/provider to validate user tokens and convert that to the tenant+user identity
-Meeze.ThinIce.Iceberg (adaptor)
-  - iceberg proxy. outside callers don't know if they're using S3+Glue or Snowflake or local files.
-  - provides interfaces and iceberg specific structures and features common to all providers
-Meeze.ThinIce.Iceberg.LocalDev (provider)
-  - a simple local provider which uses files on disk as the data and metadata store
-  - isolate metadata/storage by tenant
-  - local developer system uses static tokens defined in config, eg:
-    - xxwefnuiwqbnergiqbiybaoysudbvcolas:MyCompany:me@mycompany.example
-    - jjasdufiwbiuqbwruiqbwerouwbnrgfunr:YourCompany:you@yourcompany.example
-Meeze.ThinIce.Dev.Iceberg.S3 (provider)
-  - NOT IMPLEMENTED YET
-  - TODO stub intended as a basis to implement iceberg using IAM Role, S3 + Glue
+## Structure
 
-API (minimum viable subset of Iceberg REST catalog):
-  POST /v1/oauth/tokens    - token exchange (form-encoded)
-  GET  /v1/config           - catalog configuration
-  GET/POST/DELETE /v1/namespaces         - list, create, drop
-  GET /v1/namespaces/{ns}                - load namespace
-  GET/POST/DELETE /v1/namespaces/{ns}/tables      - list, create, drop
-  GET /v1/namespaces/{ns}/tables/{table}          - load table
-  GET/PUT /v1/data/{path}                - blob streaming read/write
+**Meeze.ThinIce.App** (API service)
+  - ASP.NET Minimal API host with AOT publishing
+  - Endpoint groups for OAuth, config, namespaces, tables, blob data
+  - Pass-through streaming async layer to underlying providers
+
+**Meeze.ThinIce.Auth** (adaptor)
+  - Auth middleware validates Bearer tokens, sets TenantContext on request features
+  - Anonymous endpoints (token exchange, config) configurable via `ThinIceAuthOptions`
+  - Outside callers see a single token without ever knowing what the inner provider is
+  - S3 access tokens, for example, never leave ThinIce
+
+**Meeze.ThinIce.Auth.Abstractions** (leaf)
+  - `IAuthProvider`, `TenantContext`, OAuth request/response models
+
+**Meeze.ThinIce.Iceberg** (adaptor)
+  - Iceberg proxy interfaces and models common to all providers
+  - `IIcebergCatalog`, `IIcebergStorage`, `NamespaceHelpers`
+
+**Meeze.ThinIce.Iceberg.LocalDev** (provider)
+  - Files-on-disk implementation for local development
+  - Isolates metadata/storage by tenant
+  - Static tokens defined in config, eg:
+    - `xxwefnuiwqbnergiqbiybaoysudbvcolas:MyCompany:me@mycompany.example`
+    - `jjasdufiwbiuqbwruiqbwerouwbnrgfunr:YourCompany:you@yourcompany.example`
+  - Default data path: `{LocalApplicationData}/ThinIce/data` (configurable via `LocalDev:BasePath`)
+
+**Meeze.ThinIce.Dev.Iceberg.S3** (provider)
+  - NOT IMPLEMENTED YET
+  - TODO stub intended as a basis to implement Iceberg using IAM Role, S3 + Glue
+
+## API (minimum viable subset of Iceberg REST catalog)
+
+| Method | Path | Status |
+|--------|------|--------|
+| POST | `/v1/oauth/tokens` | Implemented (form-encoded token exchange) |
+| GET | `/v1/config` | Implemented (catalog configuration) |
+| GET/POST/DELETE | `/v1/namespaces` | Phase 3 |
+| GET | `/v1/namespaces/{ns}` | Phase 3 |
+| GET/POST/DELETE | `/v1/namespaces/{ns}/tables` | Phase 4 |
+| GET | `/v1/namespaces/{ns}/tables/{table}` | Phase 4 |
+| GET/PUT | `/v1/data/{path}` | Phase 5 |
+
+## Current State
+
+**Phase 2 complete** — Auth middleware, token exchange (`POST /v1/oauth/tokens`), and catalog config (`GET /v1/config`) are implemented. 39 tests passing, 0 warnings. Next: Phase 3 (Namespace CRUD).
+
+See `doc/PLAN.md` for the full implementation plan.

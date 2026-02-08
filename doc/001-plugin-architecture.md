@@ -23,3 +23,10 @@ By proxing multiple back-end services (S3, Snowflake, etc), in a tenanted fashio
 - each provider registers IIcebergCatalog, IIcebergStorage, IAuthProvider via DI
 - all tenants use the same provider instance; tenant isolation is within the provider (path-prefix for LocalDev)
 - multi-provider routing (different backend per tenant) deferred — single provider active at startup for now
+
+### Minimal API over MVC Controllers
+
+- MVC controllers require runtime reflection for model binding, routing, and filter pipelines
+- This is incompatible with `PublishAot` and `CreateSlimBuilder`
+- Minimal API endpoints with source-generated `[JsonSerializable]` contexts are fully AOT-compatible
+- Endpoints are organised in static extension classes under `Endpoints/`, mapped as route groups

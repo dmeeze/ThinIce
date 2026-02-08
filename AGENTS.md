@@ -11,7 +11,7 @@ dotnet build ThinIce.sln
 # Run the web app
 dotnet run --project src/Meeze.ThinIce.App
 
-# Run tests (test/ directory exists but no test projects yet)
+# Run tests
 dotnet test ThinIce.sln
 ```
 
@@ -25,10 +25,11 @@ This is a **service layer** (not a browser webapp). It uses a **DI-based plugin 
 
 The projects follow an **adaptor/provider pattern**:
 
-- **Meeze.ThinIce.App** — ASP.NET web service (the host). Implements controllers for Iceberg REST catalog and blob read/write. Uses `CreateSlimBuilder` with AOT publishing enabled.
-- **Meeze.ThinIce.Auth** (adaptor) — Token proxy layer. Issues its own tokens to callers; providers are responsible for exchanging these for back-end credentials (ADR 002). Inner tokens (e.g., S3 signed keys) never leave ThinIce.
-- **Meeze.ThinIce.Iceberg** (adaptor) — Iceberg-specific interfaces and structures common across all providers. Abstracts whether the back-end is S3+Glue, Snowflake, or local files.
-- **Meeze.ThinIce.Iceberg.LocalDev** (provider) — Files-on-disk implementation for local development (ADR 003). Uses static tokens from config mapped to tenant+user identity.
+- **Meeze.ThinIce.App** — ASP.NET Minimal API host. `CreateSlimBuilder` with AOT publishing. Endpoint groups in `Endpoints/` directory. `AppJsonSerializerContext` for source-generated JSON.
+- **Meeze.ThinIce.Auth** (adaptor) — `ThinIceAuthMiddleware` validates Bearer tokens via `IEnumerable<IAuthProvider>`, sets `TenantContext` on `HttpContext.Features`. Anonymous endpoints configured via `ThinIceAuthOptions`. `AuthJsonContext` for AOT error serialization.
+- **Meeze.ThinIce.Auth.Abstractions** (leaf) — `IAuthProvider`, `TenantContext` record, `OAuthTokenRequest`/`OAuthTokenResponse` models. Root namespace: `Meeze.ThinIce.Auth`.
+- **Meeze.ThinIce.Iceberg** (adaptor) — `IIcebergCatalog`, `IIcebergStorage`, `NamespaceHelpers`, 14 Iceberg model records.
+- **Meeze.ThinIce.Iceberg.LocalDev** (provider) — Files-on-disk implementation for local development (ADR 003). `LocalDevAuthProvider` maps static config tokens to tenant+user identity. `LocalDevOptions.ResolvedBasePath` defaults to `{LocalApplicationData}/ThinIce/data`.
 
 ### Key Design Decisions
 
@@ -39,10 +40,23 @@ Architecture Decision Records are in `doc/`:
 
 ### Current State
 
-The project is in early scaffolding — library projects contain stub `Class1` classes, and the App project has the default template code. The `test/` directory is empty.
+**Phase 2 complete.** Auth middleware, token exchange, and config endpoints are implemented and tested. The app starts, authenticates requests, and serves `/v1/oauth/tokens` (POST) and `/v1/config` (GET). Next: Phase 3 (Namespace CRUD).
+
+- 39 tests, all passing
+- 0 warnings, 0 errors
+
+### Conventions
+
+- `[LoggerMessage]` source-generated logging only — no `ILogger.Log*()` calls
+- `[JsonSerializable]` source-generated contexts for all serialized types (AOT)
+- `TreatWarningsAsErrors` in all projects
+- Primary constructor records for all models/DTOs
+- MSTest with `[DataRow]` parameterization, ice-themed test data
+- Error messages are ice-themed
 
 ## Tech Stack
 
 - .NET 10, C#, nullable reference types enabled, implicit usings
-- ASP.NET Core with AOT publishing (`PublishAot`)
+- ASP.NET Core Minimal APIs with AOT publishing (`PublishAot`)
+- MSTest 4.x for testing, `Microsoft.AspNetCore.TestHost` for middleware tests
 - Solution file: `ThinIce.sln`
