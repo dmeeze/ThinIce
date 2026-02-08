@@ -8,7 +8,23 @@ public static class LocalDevServiceExtensions
 {
     public static IServiceCollection AddLocalDevProvider(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<LocalDevOptions>(configuration.GetSection("LocalDev"));
+        services.Configure<LocalDevOptions>(options =>
+        {
+            var section = configuration.GetSection("LocalDev");
+            options.BasePath = section["BasePath"];
+
+            var tokensSection = section.GetSection("Tokens");
+            if (tokensSection.Exists())
+            {
+                foreach (var child in tokensSection.GetChildren())
+                {
+                    if (child.Value is not null)
+                    {
+                        options.Tokens.Add(child.Value);
+                    }
+                }
+            }
+        });
 
         services.AddSingleton<LocalDevAuthProvider>();
         services.AddSingleton<IAuthProvider>(sp => sp.GetRequiredService<LocalDevAuthProvider>());

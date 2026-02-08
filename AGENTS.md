@@ -13,6 +13,9 @@ dotnet run --project src/Meeze.ThinIce.App
 
 # Run tests
 dotnet test ThinIce.sln
+
+# Publish AOT native binary
+dotnet publish src/Meeze.ThinIce.App -c Release
 ```
 
 ## Architecture
@@ -40,10 +43,7 @@ Architecture Decision Records are in `doc/`:
 
 ### Current State
 
-**Phase 6 complete.** Integration tests via `WebApplicationFactory<Program>`. Full CRUD cycles through HTTP endpoints, auth flow (token exchange → authenticated requests), 401 for bad tokens, tenant isolation (SnowyConesIceCream vs WayneEnterprises). All tests use temp directory for `BasePath`, cleaned up on Dispose. Next: Phase 7 (Polish).
-
-- 93 tests, all passing
-- 0 warnings, 0 errors
+**Phase 7 complete.** All phases implemented. Error handling consistency verified, AOT publish clean (no trim warnings), documentation updated.
 
 ### Conventions
 
@@ -53,6 +53,8 @@ Architecture Decision Records are in `doc/`:
 - Primary constructor records for all models/DTOs
 - MSTest with `[DataRow]` parameterization, ice-themed test data
 - Error messages are ice-themed
+- AOT-compatible configuration binding (manual `Configure<T>` lambda, no reflection-based `IConfiguration.Bind`)
+- Never put volatile counts (test counts, warning counts, etc.) in docs — they create a maintenance burden on every change
 
 ## Tech Stack
 

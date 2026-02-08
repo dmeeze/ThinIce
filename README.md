@@ -38,14 +38,8 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
   - `LocalDevCatalog` implements single-tenant namespace and table CRUD on filesystem (partial class split: `.Namespaces.cs`, `.Tables.cs`)
   - `LocalDevStorageResolver` caches per-tenant `LocalDevStorage` instances for blob I/O under `{tenant}/data/`
   - Isolates metadata/storage by tenant
-  - Static tokens defined in config, eg:
-    - `xxwefnuiwqbnergiqbiybaoysudbvcolas:MyCompany:me@mycompany.example`
-    - `jjasdufiwbiuqbwruiqbwerouwbnrgfunr:YourCompany:you@yourcompany.example`
+  - Static tokens defined in config (format `token:Tenant:user@email`)
   - Default data path: `{LocalApplicationData}/ThinIce/data` (configurable via `LocalDev:BasePath`)
-
-**Meeze.ThinIce.Dev.Iceberg.S3** (provider)
-  - NOT IMPLEMENTED YET
-  - TODO stub intended as a basis to implement Iceberg using IAM Role, S3 + Glue
 
 ## API (minimum viable subset of Iceberg REST catalog)
 
@@ -59,8 +53,101 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 | GET | `/v1/namespaces/{ns}/tables/{table}` | Implemented |
 | GET/PUT | `/v1/data/{path}` | Implemented (streaming blob I/O) |
 
+## Usage
+
+### Running the app
+
+```bash
+dotnet run --project src/Meeze.ThinIce.App
+```
+
+The app starts on `http://localhost:5000` by default.
+
+### Running tests
+
+```bash
+dotnet test ThinIce.sln
+```
+
+### Publishing (AOT native binary)
+
+```bash
+dotnet publish src/Meeze.ThinIce.App -c Release
+```
+
+### API examples
+
+The development config (`appsettings.Development.json`) ships with two tokens:
+- `freeze-ray-token-001` → tenant `SnowyConesIceCream`, user `mrfreeze@example.com`
+- `ice-age-token-002` → tenant `WayneEnterprises`, user `batman@example.org`
+
+**Exchange a token:**
+
+```bash
+curl -X POST http://localhost:5000/v1/oauth/tokens \
+  -d "grant_type=client_credentials&client_id=my-client&client_secret=freeze-ray-token-001&scope=catalog"
+```
+
+**Get catalog config:**
+
+```bash
+curl http://localhost:5000/v1/config
+```
+
+**Create a namespace:**
+
+```bash
+curl -X POST http://localhost:5000/v1/namespaces \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{"namespace": ["analytics"], "properties": {"owner": "data-team"}}'
+```
+
+**List namespaces:**
+
+```bash
+curl http://localhost:5000/v1/namespaces \
+  -H "Authorization: Bearer <access_token>"
+```
+
+**Create a table:**
+
+```bash
+curl -X POST http://localhost:5000/v1/namespaces/analytics/tables \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "events", "schema": {"type": "struct", "fields": [{"id": 1, "name": "ts", "type": "timestamp", "required": true}]}}'
+```
+
+**Write data (blob):**
+
+```bash
+curl -X PUT http://localhost:5000/v1/data/warehouse/events/data.parquet \
+  -H "Authorization: Bearer <access_token>" \
+  -H "Content-Type: application/octet-stream" \
+  --data-binary @data.parquet
+```
+
+**Read data (blob):**
+
+```bash
+curl http://localhost:5000/v1/data/warehouse/events/data.parquet \
+  -H "Authorization: Bearer <access_token>" \
+  -o data.parquet
+```
+
 ## Current State
 
-**Phase 6 complete** — Integration tests via `WebApplicationFactory<Program>`. Full CRUD cycles through HTTP endpoints, auth flow (token exchange → authenticated requests), 401 for bad tokens, tenant isolation. 93 tests passing, 0 warnings. Next: Phase 7 (Polish).
+**Phase 7 complete** — All planned phases implemented. LocalDev provider fully functional with namespace CRUD, table CRUD, and streaming blob storage. AOT native binary publishes cleanly.
 
 See `doc/PLAN.md` for the full implementation plan.
+
+## What's Next
+
+These are not planned but are natural next steps:
+
+- **S3 + Glue provider** — `IIcebergCatalog` backed by AWS Glue, `IIcebergStorage` backed by S3 with IAM role assumption
+- **Keyed DI for multi-provider routing** — route different tenants to different backend providers via `TenantContext.ProviderKey`
+- **Real OIDC token issuance** — replace static tokens with JWT issuance/validation (currently deferred per ADR 002)
+- **Namespace update** (PATCH properties) — not in the Iceberg REST minimum viable subset but commonly used
+- **Table commit/update** — `POST /v1/namespaces/{ns}/tables/{table}` for metadata updates
