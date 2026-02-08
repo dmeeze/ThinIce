@@ -134,6 +134,24 @@ curl http://localhost:5000/v1/data/warehouse/events/data.parquet \
 
 See `doc/PLAN.md` for the full implementation plan.
 
+## Throttling
+
+Rate limiting is applied via ASP.NET Core Rate Limiting middleware (ADR 004):
+
+- `/v1/config` (unauthenticated): 100 requests/minute (sliding window)
+- All authenticated endpoints: 10,000 requests/minute shared across all APIs (sliding window)
+
+Configurable via `appsettings.json`:
+
+```json
+{
+  "Throttling": {
+    "ConfigPermitsPerMinute": 100,
+    "AuthenticatedPermitsPerMinute": 10000
+  }
+}
+```
+
 ## What's Next
 
 These are not planned but are natural next steps:

@@ -8,7 +8,7 @@ public static class NamespaceEndpoints
 {
     public static RouteGroupBuilder MapNamespaceEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/v1/namespaces");
+        var group = routes.MapGroup("/v1/namespaces").RequireRateLimiting("authenticated");
 
         group.MapGet("/", async (HttpContext context, IIcebergCatalogResolver resolver) =>
         {

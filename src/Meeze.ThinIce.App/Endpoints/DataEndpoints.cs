@@ -8,7 +8,7 @@ public static class DataEndpoints
 {
     public static RouteGroupBuilder MapDataEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/v1/data");
+        var group = routes.MapGroup("/v1/data").RequireRateLimiting("authenticated");
 
         group.MapGet("/{**path}", async (HttpContext context, IIcebergStorageResolver resolver, string path) =>
         {

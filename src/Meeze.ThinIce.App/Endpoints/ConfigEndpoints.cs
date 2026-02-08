@@ -6,7 +6,7 @@ public static class ConfigEndpoints
 {
     public static RouteGroupBuilder MapConfigEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/v1");
+        var group = routes.MapGroup("/v1").RequireRateLimiting("config");
 
         group.MapGet("/config", () =>
         {

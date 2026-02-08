@@ -40,6 +40,7 @@ Architecture Decision Records are in `doc/`:
 - **ADR 001** — DI plugin architecture over reflection-based plugins or hard-coded switches
 - **ADR 002** — Never expose underlying provider tokens; accept externally-issued bearer tokens
 - **ADR 003** — Local dev uses flat files on disk (no Minio/Spark/containers)
+- **ADR 004** — Endpoint throttling via ASP.NET Core Rate Limiting middleware with tiered sliding window policies
 
 ### Current State
 

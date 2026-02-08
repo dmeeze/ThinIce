@@ -8,7 +8,7 @@ public static class TableEndpoints
 {
     public static RouteGroupBuilder MapTableEndpoints(this IEndpointRouteBuilder routes)
     {
-        var group = routes.MapGroup("/v1/namespaces/{ns}/tables");
+        var group = routes.MapGroup("/v1/namespaces/{ns}/tables").RequireRateLimiting("authenticated");
 
         group.MapGet("/", async (HttpContext context, IIcebergCatalogResolver resolver, string ns) =>
         {

@@ -1,7 +1,9 @@
+using System.Threading.RateLimiting;
 using Meeze.ThinIce.App;
 using Meeze.ThinIce.App.Endpoints;
 using Meeze.ThinIce.Auth;
 using Meeze.ThinIce.Iceberg.LocalDev;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Meeze.ThinIce.App;
 
@@ -25,9 +27,47 @@ public partial class Program
         });
         builder.Services.AddLocalDevProvider(builder.Configuration);
 
+        builder.Services.Configure<ThrottlingOptions>(options =>
+        {
+            var section = builder.Configuration.GetSection("Throttling");
+            if (int.TryParse(section["ConfigPermitsPerMinute"], out var configPermits))
+                options.ConfigPermitsPerMinute = configPermits;
+            if (int.TryParse(section["AuthenticatedPermitsPerMinute"], out var authPermits))
+                options.AuthenticatedPermitsPerMinute = authPermits;
+        });
+
+        builder.Services.AddRateLimiter(limiter =>
+        {
+            var throttling = new ThrottlingOptions();
+            var section = builder.Configuration.GetSection("Throttling");
+            if (int.TryParse(section["ConfigPermitsPerMinute"], out var configPermits))
+                throttling.ConfigPermitsPerMinute = configPermits;
+            if (int.TryParse(section["AuthenticatedPermitsPerMinute"], out var authPermits))
+                throttling.AuthenticatedPermitsPerMinute = authPermits;
+
+            limiter.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            limiter.AddSlidingWindowLimiter("config", options =>
+            {
+                options.PermitLimit = throttling.ConfigPermitsPerMinute;
+                options.Window = TimeSpan.FromMinutes(1);
+                options.SegmentsPerWindow = 6;
+                options.QueueLimit = 0;
+            });
+
+            limiter.AddSlidingWindowLimiter("authenticated", options =>
+            {
+                options.PermitLimit = throttling.AuthenticatedPermitsPerMinute;
+                options.Window = TimeSpan.FromMinutes(1);
+                options.SegmentsPerWindow = 6;
+                options.QueueLimit = 0;
+            });
+        });
+
         var app = builder.Build();
 
         app.UseThinIceAuth();
+        app.UseRateLimiter();
 
         app.MapConfigEndpoints();
         app.MapNamespaceEndpoints();
