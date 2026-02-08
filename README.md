@@ -35,7 +35,7 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 **Meeze.ThinIce.Iceberg.LocalDev** (provider)
   - Files-on-disk implementation for local development
   - `LocalDevCatalogResolver` caches per-tenant `LocalDevCatalog` instances
-  - `LocalDevCatalog` implements single-tenant namespace CRUD on filesystem
+  - `LocalDevCatalog` implements single-tenant namespace and table CRUD on filesystem (partial class split: `.Namespaces.cs`, `.Tables.cs`)
   - Isolates metadata/storage by tenant
   - Static tokens defined in config, eg:
     - `xxwefnuiwqbnergiqbiybaoysudbvcolas:MyCompany:me@mycompany.example`
@@ -54,12 +54,12 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 | GET | `/v1/config` | Implemented (catalog configuration) |
 | GET/POST/DELETE | `/v1/namespaces` | Implemented |
 | GET | `/v1/namespaces/{ns}` | Implemented |
-| GET/POST/DELETE | `/v1/namespaces/{ns}/tables` | Phase 4 |
-| GET | `/v1/namespaces/{ns}/tables/{table}` | Phase 4 |
+| GET/POST/DELETE | `/v1/namespaces/{ns}/tables` | Implemented |
+| GET | `/v1/namespaces/{ns}/tables/{table}` | Implemented |
 | GET/PUT | `/v1/data/{path}` | Phase 5 |
 
 ## Current State
 
-**Phase 3b complete** — Auth, token exchange, namespace CRUD, and resolver pattern all implemented. Tenant resolution is a first-class concern via `IIcebergCatalogResolver`/`IIcebergStorageResolver`; catalog/storage interfaces operate on a single tenant. 51 tests passing, 0 warnings. Next: Phase 4 (Table CRUD).
+**Phase 4 complete** — Auth, token exchange, namespace CRUD, table CRUD, and resolver pattern all implemented. `LocalDevCatalog` supports full namespace and table lifecycle (list, create, load, drop) with filesystem-backed storage. Table metadata written as versioned `v{n}.metadata.json` files. 62 tests passing, 0 warnings. Next: Phase 5 (Blob storage).
 
 See `doc/PLAN.md` for the full implementation plan.

@@ -40,9 +40,9 @@ Architecture Decision Records are in `doc/`:
 
 ### Current State
 
-**Phase 3b complete.** Resolver pattern implemented. `IIcebergCatalogResolver`/`IIcebergStorageResolver` create per-tenant catalog/storage instances; `IIcebergCatalog`/`IIcebergStorage` operate on a single tenant (no tenant parameter). `LocalDevCatalogResolver` caches `LocalDevCatalog` per tenant. Endpoints resolve `IIcebergCatalogResolver`, call `GetCatalog(tenant)`. Next: Phase 4 (Table CRUD).
+**Phase 4 complete.** Table CRUD implemented. `LocalDevCatalog` supports ListTables, CreateTable, LoadTable, DropTable with filesystem-backed storage under `{ns}/tables/{name}/metadata/v{n}.metadata.json`. `TableEndpoints` maps `/v1/namespaces/{ns}/tables` with 404/409 error handling. Next: Phase 5 (Blob storage).
 
-- 51 tests, all passing
+- 62 tests, all passing
 - 0 warnings, 0 errors
 
 ### Conventions
