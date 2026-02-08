@@ -23,7 +23,7 @@ public static class OAuthEndpoints
             if (string.IsNullOrEmpty(request.GrantType) || string.IsNullOrEmpty(request.ClientId))
             {
                 return Results.Json(
-                    new IcebergErrorResponse(new IcebergError("Frozen solid — grant_type and client_id are required to thaw a token", "BadRequestException", 400)),
+                    new IcebergErrorResponse(new IcebergError("grant_type and client_id are required", "BadRequestException", 400)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 400);
             }
@@ -38,7 +38,7 @@ public static class OAuthEndpoints
             }
 
             return Results.Json(
-                new IcebergErrorResponse(new IcebergError("Cold reception — those credentials don't break the ice", "NotAuthorizedException", 401)),
+                new IcebergErrorResponse(new IcebergError("Invalid credentials", "NotAuthorizedException", 401)),
                 AppJsonSerializerContext.Default.IcebergErrorResponse,
                 statusCode: 401);
         });

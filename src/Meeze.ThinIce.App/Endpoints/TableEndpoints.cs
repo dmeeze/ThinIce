@@ -24,7 +24,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace vanished into thin ice — {ns} not found",
+                        $"Namespace not found: {ns}",
                         "NoSuchNamespaceException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);
@@ -45,7 +45,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace vanished into thin ice — {ns} not found",
+                        $"Namespace not found: {ns}",
                         "NoSuchNamespaceException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);
@@ -54,7 +54,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Table already frozen solid — it already exists in {ns}",
+                        $"Table already exists in namespace: {ns}",
                         "AlreadyExistsException", 409)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 409);
@@ -75,7 +75,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace vanished into thin ice — {ns} not found",
+                        $"Namespace not found: {ns}",
                         "NoSuchNamespaceException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);
@@ -84,7 +84,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Table slipped through the ice — {table} not found in {ns}",
+                        $"Table not found: {table} in namespace {ns}",
                         "NoSuchTableException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);
@@ -105,7 +105,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace vanished into thin ice — {ns} not found",
+                        $"Namespace not found: {ns}",
                         "NoSuchNamespaceException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);
@@ -114,7 +114,7 @@ public static class TableEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Table slipped through the ice — {table} not found in {ns}",
+                        $"Table not found: {table} in namespace {ns}",
                         "NoSuchTableException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);

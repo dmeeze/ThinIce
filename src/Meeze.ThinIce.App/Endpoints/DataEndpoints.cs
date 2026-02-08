@@ -23,7 +23,7 @@ public static class DataEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Data file lost in the blizzard — {path} not found",
+                        $"Data file not found: {path}",
                         "NotFoundException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);

@@ -31,7 +31,7 @@ public static class NamespaceEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace already frozen in place — {string.Join(".", request.Namespace)} exists",
+                        $"Namespace already exists: {string.Join(".", request.Namespace)}",
                         "AlreadyExistsException", 409)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 409);
@@ -52,7 +52,7 @@ public static class NamespaceEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace vanished into thin ice — {ns} not found",
+                        $"Namespace not found: {ns}",
                         "NoSuchNamespaceException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);
@@ -73,7 +73,7 @@ public static class NamespaceEndpoints
             {
                 return Results.Json(
                     new IcebergErrorResponse(new IcebergError(
-                        $"Namespace vanished into thin ice — {ns} not found",
+                        $"Namespace not found: {ns}",
                         "NoSuchNamespaceException", 404)),
                     AppJsonSerializerContext.Default.IcebergErrorResponse,
                     statusCode: 404);

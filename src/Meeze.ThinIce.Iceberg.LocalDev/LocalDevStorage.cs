@@ -17,7 +17,7 @@ public sealed partial class LocalDevStorage : IIcebergStorage
     {
         var fullPath = Path.Combine(_dataRoot, path);
         if (!File.Exists(fullPath))
-            throw new FileNotFoundException($"Data file lost in the blizzard — {path} not found");
+            throw new FileNotFoundException($"Data file not found: {path}");
 
         LogFileRead(path);
         Stream stream = new FileStream(fullPath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize: 4096, useAsync: true);
@@ -41,7 +41,7 @@ public sealed partial class LocalDevStorage : IIcebergStorage
     {
         var fullPath = Path.Combine(_dataRoot, path);
         if (!File.Exists(fullPath))
-            throw new FileNotFoundException($"Data file lost in the blizzard — {path} not found");
+            throw new FileNotFoundException($"Data file not found: {path}");
 
         File.Delete(fullPath);
         LogFileDeleted(path);

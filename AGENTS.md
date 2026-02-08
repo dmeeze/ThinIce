@@ -52,7 +52,7 @@ Architecture Decision Records are in `doc/`:
 - `TreatWarningsAsErrors` in all projects
 - Primary constructor records for all models/DTOs
 - MSTest with `[DataRow]` parameterization, ice-themed test data
-- Error messages are ice-themed
+- Error messages in source code are plain and factual; ice-themed language is reserved for test data and examples
 - AOT-compatible configuration binding (manual `Configure<T>` lambda, no reflection-based `IConfiguration.Bind`)
 - Never put volatile counts (test counts, warning counts, etc.) in docs — they create a maintenance burden on every change
 

@@ -37,7 +37,7 @@ public sealed partial class ThinIceAuthMiddleware
         var authHeader = context.Request.Headers.Authorization.ToString();
         if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
-            await WriteUnauthorized(context, "The ice is too thin here — no credentials, no crossing");
+            await WriteUnauthorized(context, "Missing or invalid Authorization header");
             return;
         }
 
@@ -56,7 +56,7 @@ public sealed partial class ThinIceAuthMiddleware
         }
 
         LogAuthFailed();
-        await WriteUnauthorized(context, "Your token has melted — it's no good here");
+        await WriteUnauthorized(context, "Invalid or expired token");
     }
 
     private bool IsAnonymousEndpoint(HttpContext context)
