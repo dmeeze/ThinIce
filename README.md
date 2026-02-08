@@ -13,7 +13,7 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 ## Structure
 
 **Meeze.ThinIce.App** (API service)
-  - ASP.NET Minimal API host with AOT publishing
+  - ASP.NET Minimal API host with AOT publishing, explicit `Program.Main` entry point
   - Endpoint groups for OAuth, config, namespaces, tables, blob data
   - Pass-through streaming async layer to underlying providers
 
@@ -61,6 +61,6 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 
 ## Current State
 
-**Phase 5 complete** — Auth, token exchange, namespace CRUD, table CRUD, resolver pattern, and blob storage all implemented. `LocalDevStorage` implements streaming file read/write/delete. `DataEndpoints` streams `GET /v1/data/{**path}` responses and `PUT /v1/data/{**path}` request bodies. 72 tests passing, 0 warnings. Next: Phase 6 (Integration tests).
+**Phase 6 complete** — Integration tests via `WebApplicationFactory<Program>`. Full CRUD cycles through HTTP endpoints, auth flow (token exchange → authenticated requests), 401 for bad tokens, tenant isolation. 93 tests passing, 0 warnings. Next: Phase 7 (Polish).
 
 See `doc/PLAN.md` for the full implementation plan.

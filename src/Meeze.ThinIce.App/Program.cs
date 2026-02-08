@@ -3,31 +3,39 @@ using Meeze.ThinIce.App.Endpoints;
 using Meeze.ThinIce.Auth;
 using Meeze.ThinIce.Iceberg.LocalDev;
 
-var builder = WebApplication.CreateSlimBuilder(args);
+namespace Meeze.ThinIce.App;
 
-builder.Services.ConfigureHttpJsonOptions(options =>
+public partial class Program
 {
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
-});
+    public static void Main(string[] args)
+    {
+        var builder = WebApplication.CreateSlimBuilder(args);
 
-builder.Services.AddThinIceAuth(auth =>
-{
-    auth.AnonymousEndpoints =
-    [
-        new("/v1/oauth/tokens", "POST"),
-        new("/v1/config", "GET")
-    ];
-});
-builder.Services.AddLocalDevProvider(builder.Configuration);
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+        });
 
-var app = builder.Build();
+        builder.Services.AddThinIceAuth(auth =>
+        {
+            auth.AnonymousEndpoints =
+            [
+                new("/v1/oauth/tokens", "POST"),
+                new("/v1/config", "GET")
+            ];
+        });
+        builder.Services.AddLocalDevProvider(builder.Configuration);
 
-app.UseThinIceAuth();
+        var app = builder.Build();
 
-app.MapOAuthEndpoints();
-app.MapConfigEndpoints();
-app.MapNamespaceEndpoints();
-app.MapTableEndpoints();
-app.MapDataEndpoints();
+        app.UseThinIceAuth();
 
-app.Run();
+        app.MapOAuthEndpoints();
+        app.MapConfigEndpoints();
+        app.MapNamespaceEndpoints();
+        app.MapTableEndpoints();
+        app.MapDataEndpoints();
+
+        app.Run();
+    }
+}

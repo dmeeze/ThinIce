@@ -40,9 +40,9 @@ Architecture Decision Records are in `doc/`:
 
 ### Current State
 
-**Phase 5 complete.** Blob storage implemented. `LocalDevStorage` implements `IIcebergStorage` with filesystem-backed ReadFile/WriteFile/DeleteFile. `LocalDevStorageResolver` caches per-tenant storage instances. `DataEndpoints` maps `GET /v1/data/{**path}` (streaming response) and `PUT /v1/data/{**path}` (streaming request body) with 404 error handling. Next: Phase 6 (Integration tests).
+**Phase 6 complete.** Integration tests via `WebApplicationFactory<Program>`. Full CRUD cycles through HTTP endpoints, auth flow (token exchange → authenticated requests), 401 for bad tokens, tenant isolation (SnowyConesIceCream vs WayneEnterprises). All tests use temp directory for `BasePath`, cleaned up on Dispose. Next: Phase 7 (Polish).
 
-- 72 tests, all passing
+- 93 tests, all passing
 - 0 warnings, 0 errors
 
 ### Conventions
@@ -58,5 +58,5 @@ Architecture Decision Records are in `doc/`:
 
 - .NET 10, C#, nullable reference types enabled, implicit usings
 - ASP.NET Core Minimal APIs with AOT publishing (`PublishAot`)
-- MSTest 4.x for testing, `Microsoft.AspNetCore.TestHost` for middleware tests
+- MSTest 4.x for testing, `Microsoft.AspNetCore.Mvc.Testing` for integration tests, `Microsoft.AspNetCore.TestHost` for middleware tests
 - Solution file: `ThinIce.sln`
