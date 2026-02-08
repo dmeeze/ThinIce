@@ -8,6 +8,7 @@ namespace Meeze.ThinIce.Iceberg.LocalDev;
 public sealed partial class LocalDevAuthProvider : IAuthProvider
 {
     public const string Key = "LocalDev";
+    public const string LocalDevClientId = "local-development";
 
     private readonly Dictionary<string, (string Tenant, string User)> _tokens;
     private readonly ILogger<LocalDevAuthProvider> _logger;
@@ -49,15 +50,18 @@ public sealed partial class LocalDevAuthProvider : IAuthProvider
 
     public Task<OAuthTokenResponse?> ExchangeTokenAsync(OAuthTokenRequest request, CancellationToken ct = default)
     {
-        if (request.GrantType != "client_credentials")
+        if (request.GrantType != OAuthTokenRequest.ClientCredentialsGrantType)
             return Task.FromResult<OAuthTokenResponse?>(null);
 
-        // For LocalDev, the client_id is the static token itself
-        if (_tokens.TryGetValue(request.ClientId, out var identity))
+        if (!string.Equals(request.ClientId, LocalDevClientId, StringComparison.Ordinal))
+            return Task.FromResult<OAuthTokenResponse?>(null);
+
+        // For LocalDev, client_secret is the token and scope is the user
+        if (_tokens.TryGetValue(request.ClientSecret, out var identity))
         {
             LogTokenExchanged(identity.Tenant, identity.User);
             return Task.FromResult<OAuthTokenResponse?>(
-                new OAuthTokenResponse(AccessToken: request.ClientId, Scope: request.Scope));
+                new OAuthTokenResponse(AccessToken: request.ClientSecret, Scope: identity.User));
         }
 
         return Task.FromResult<OAuthTokenResponse?>(null);

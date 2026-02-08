@@ -76,20 +76,32 @@ public class LocalDevAuthProviderTests
     public async Task ExchangeTokenAsync_ValidClientCredentials_ReturnsToken()
     {
         var provider = CreateProvider();
-        var request = new OAuthTokenRequest("client_credentials", "freeze-ray-token-001", "");
+        var request = new OAuthTokenRequest(OAuthTokenRequest.ClientCredentialsGrantType, LocalDevAuthProvider.LocalDevClientId, "freeze-ray-token-001");
 
         var result = await provider.ExchangeTokenAsync(request);
 
         Assert.IsNotNull(result);
         Assert.AreEqual("freeze-ray-token-001", result.AccessToken);
         Assert.AreEqual("bearer", result.TokenType);
+        Assert.AreEqual("mrfreeze@example.com", result.Scope);
     }
 
     [TestMethod]
-    public async Task ExchangeTokenAsync_InvalidClientId_ReturnsNull()
+    public async Task ExchangeTokenAsync_InvalidSecret_ReturnsNull()
     {
         var provider = CreateProvider();
-        var request = new OAuthTokenRequest("client_credentials", "not-a-real-token", "");
+        var request = new OAuthTokenRequest(OAuthTokenRequest.ClientCredentialsGrantType, LocalDevAuthProvider.LocalDevClientId, "not-a-real-token");
+
+        var result = await provider.ExchangeTokenAsync(request);
+
+        Assert.IsNull(result);
+    }
+
+    [TestMethod]
+    public async Task ExchangeTokenAsync_WrongClientId_ReturnsNull()
+    {
+        var provider = CreateProvider();
+        var request = new OAuthTokenRequest(OAuthTokenRequest.ClientCredentialsGrantType, "some-other-client", "freeze-ray-token-001");
 
         var result = await provider.ExchangeTokenAsync(request);
 
@@ -100,7 +112,7 @@ public class LocalDevAuthProviderTests
     public async Task ExchangeTokenAsync_WrongGrantType_ReturnsNull()
     {
         var provider = CreateProvider();
-        var request = new OAuthTokenRequest("authorization_code", "freeze-ray-token-001", "");
+        var request = new OAuthTokenRequest("authorization_code", LocalDevAuthProvider.LocalDevClientId, "freeze-ray-token-001");
 
         var result = await provider.ExchangeTokenAsync(request);
 
@@ -108,15 +120,15 @@ public class LocalDevAuthProviderTests
     }
 
     [TestMethod]
-    public async Task ExchangeTokenAsync_WithScope_ReturnsScopeInResponse()
+    public async Task ExchangeTokenAsync_ReturnsUserAsScope()
     {
         var provider = CreateProvider();
-        var request = new OAuthTokenRequest("client_credentials", "ice-age-token-002", "", Scope: "catalog");
+        var request = new OAuthTokenRequest(OAuthTokenRequest.ClientCredentialsGrantType, LocalDevAuthProvider.LocalDevClientId, "ice-age-token-002");
 
         var result = await provider.ExchangeTokenAsync(request);
 
         Assert.IsNotNull(result);
-        Assert.AreEqual("catalog", result.Scope);
+        Assert.AreEqual("batman@example.org", result.Scope);
     }
 
     [TestMethod]

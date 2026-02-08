@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using Meeze.ThinIce.Auth.Models;
+using Meeze.ThinIce.Iceberg.LocalDev;
 using Meeze.ThinIce.Iceberg.Models;
 
 namespace Meeze.ThinIce.Tests;
@@ -40,9 +41,9 @@ public class AuthIntegrationTests
     {
         var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["grant_type"] = "client_credentials",
-            ["client_id"] = "freeze-ray-token-001",
-            ["client_secret"] = ""
+            ["grant_type"] = OAuthTokenRequest.ClientCredentialsGrantType,
+            ["client_id"] = LocalDevAuthProvider.LocalDevClientId,
+            ["client_secret"] = "freeze-ray-token-001"
         });
 
         var response = await _client.PostAsync("/v1/oauth/tokens", form);
@@ -51,6 +52,7 @@ public class AuthIntegrationTests
         var token = await response.Content.ReadJsonAsync<OAuthTokenResponse>();
         Assert.AreEqual("freeze-ray-token-001", token.AccessToken);
         Assert.AreEqual("bearer", token.TokenType);
+        Assert.AreEqual("mrfreeze@example.com", token.Scope);
     }
 
     [TestMethod]
@@ -58,9 +60,9 @@ public class AuthIntegrationTests
     {
         var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["grant_type"] = "client_credentials",
-            ["client_id"] = "melted-token",
-            ["client_secret"] = ""
+            ["grant_type"] = OAuthTokenRequest.ClientCredentialsGrantType,
+            ["client_id"] = LocalDevAuthProvider.LocalDevClientId,
+            ["client_secret"] = "melted-token"
         });
 
         var response = await _client.PostAsync("/v1/oauth/tokens", form);
@@ -73,7 +75,7 @@ public class AuthIntegrationTests
     {
         var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["client_id"] = "freeze-ray-token-001"
+            ["client_id"] = LocalDevAuthProvider.LocalDevClientId
         });
 
         var response = await _client.PostAsync("/v1/oauth/tokens", form);
@@ -105,9 +107,9 @@ public class AuthIntegrationTests
         // Exchange credentials for an access token
         var form = new FormUrlEncodedContent(new Dictionary<string, string>
         {
-            ["grant_type"] = "client_credentials",
-            ["client_id"] = "freeze-ray-token-001",
-            ["client_secret"] = ""
+            ["grant_type"] = OAuthTokenRequest.ClientCredentialsGrantType,
+            ["client_id"] = LocalDevAuthProvider.LocalDevClientId,
+            ["client_secret"] = "freeze-ray-token-001"
         });
         var exchangeResponse = await _client.PostAsync("/v1/oauth/tokens", form);
         Assert.AreEqual(HttpStatusCode.OK, exchangeResponse.StatusCode);

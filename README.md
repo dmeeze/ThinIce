@@ -85,7 +85,7 @@ The development config (`appsettings.Development.json`) ships with two tokens:
 
 ```bash
 curl -X POST http://localhost:5000/v1/oauth/tokens \
-  -d "grant_type=client_credentials&client_id=my-client&client_secret=freeze-ray-token-001&scope=catalog"
+  -d "grant_type=client_credentials&client_id=local-development&client_secret=freeze-ray-token-001"
 ```
 
 **Get catalog config:**
