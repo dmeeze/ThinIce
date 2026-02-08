@@ -1,7 +1,5 @@
 using System.Net;
 using System.Net.Http.Headers;
-using Meeze.ThinIce.Auth.Models;
-using Meeze.ThinIce.Iceberg.LocalDev;
 using Meeze.ThinIce.Iceberg.Models;
 
 namespace Meeze.ThinIce.Tests;
@@ -37,53 +35,6 @@ public class AuthIntegrationTests
     }
 
     [TestMethod]
-    public async Task TokenExchange_ValidCredentials_ReturnsAccessToken()
-    {
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["grant_type"] = OAuthTokenRequest.ClientCredentialsGrantType,
-            ["client_id"] = LocalDevAuthProvider.LocalDevClientId,
-            ["client_secret"] = "freeze-ray-token-001"
-        });
-
-        var response = await _client.PostAsync("/v1/oauth/tokens", form);
-
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        var token = await response.Content.ReadJsonAsync<OAuthTokenResponse>();
-        Assert.AreEqual("freeze-ray-token-001", token.AccessToken);
-        Assert.AreEqual("bearer", token.TokenType);
-        Assert.AreEqual("mrfreeze@example.com", token.Scope);
-    }
-
-    [TestMethod]
-    public async Task TokenExchange_InvalidCredentials_Returns401()
-    {
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["grant_type"] = OAuthTokenRequest.ClientCredentialsGrantType,
-            ["client_id"] = LocalDevAuthProvider.LocalDevClientId,
-            ["client_secret"] = "melted-token"
-        });
-
-        var response = await _client.PostAsync("/v1/oauth/tokens", form);
-
-        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
-    }
-
-    [TestMethod]
-    public async Task TokenExchange_MissingGrantType_Returns400()
-    {
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["client_id"] = LocalDevAuthProvider.LocalDevClientId
-        });
-
-        var response = await _client.PostAsync("/v1/oauth/tokens", form);
-
-        Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-    }
-
-    [TestMethod]
     public async Task ProtectedEndpoint_NoAuth_Returns401()
     {
         var response = await _client.GetAsync("/v1/namespaces");
@@ -102,24 +53,12 @@ public class AuthIntegrationTests
     }
 
     [TestMethod]
-    public async Task AuthFlow_ExchangeToken_ThenAccessProtected()
+    public async Task ProtectedEndpoint_ValidToken_Returns200()
     {
-        // Exchange credentials for an access token
-        var form = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            ["grant_type"] = OAuthTokenRequest.ClientCredentialsGrantType,
-            ["client_id"] = LocalDevAuthProvider.LocalDevClientId,
-            ["client_secret"] = "freeze-ray-token-001"
-        });
-        var exchangeResponse = await _client.PostAsync("/v1/oauth/tokens", form);
-        Assert.AreEqual(HttpStatusCode.OK, exchangeResponse.StatusCode);
+        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "freeze-ray-token-001");
 
-        var token = await exchangeResponse.Content.ReadJsonAsync<OAuthTokenResponse>();
+        var response = await _client.GetAsync("/v1/namespaces");
 
-        // Use the access token to hit a protected endpoint
-        _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.AccessToken);
-
-        var namespacesResponse = await _client.GetAsync("/v1/namespaces");
-        Assert.AreEqual(HttpStatusCode.OK, namespacesResponse.StatusCode);
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     }
 }

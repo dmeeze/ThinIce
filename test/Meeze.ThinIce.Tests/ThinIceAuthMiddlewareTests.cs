@@ -36,7 +36,6 @@ public class ThinIceAuthMiddlewareTests
                     {
                         auth.AnonymousEndpoints =
                         [
-                            new("/v1/oauth/tokens", "POST"),
                             new("/v1/config", "GET")
                         ];
                     });
@@ -48,7 +47,6 @@ public class ThinIceAuthMiddlewareTests
                     app.UseEndpoints(endpoints =>
                     {
                         endpoints.MapGet("/v1/config", () => Results.Ok("config"));
-                        endpoints.MapPost("/v1/oauth/tokens", () => Results.Ok("tokens"));
                         endpoints.MapGet("/v1/namespaces", (HttpContext ctx) =>
                         {
                             var tenant = ctx.Features.Get<TenantContext>();
@@ -68,18 +66,12 @@ public class ThinIceAuthMiddlewareTests
     }
 
     [TestMethod]
-    [DataRow("GET", "/v1/config", DisplayName = "GET /v1/config (anonymous)")]
-    [DataRow("POST", "/v1/oauth/tokens", DisplayName = "POST /v1/oauth/tokens (anonymous)")]
-    public async Task AnonymousEndpoint_NoAuth_Returns200(string method, string path)
+    public async Task AnonymousEndpoint_NoAuth_Returns200()
     {
         var (host, client) = await StartTestHostAsync();
         using var _ = host;
 
-        var request = new HttpRequestMessage(new HttpMethod(method), path);
-        if (method == "POST")
-            request.Content = new StringContent("");
-
-        var response = await client.SendAsync(request);
+        var response = await client.GetAsync("/v1/config");
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
     }

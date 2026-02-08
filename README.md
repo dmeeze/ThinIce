@@ -1,4 +1,4 @@
-# ThinIce - Standalone Iceberg and OIDC
+# ThinIce - Standalone Iceberg REST Catalog Proxy
 
 Apache Iceberg is a big data system which is effectively a set of columnar data files and a metadata catalog of what
 data's in those files. You can get one off the shelf from many vendors and providers, but for local dev that can be
@@ -14,17 +14,17 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 
 **Meeze.ThinIce.App** (API service)
   - ASP.NET Minimal API host with AOT publishing, explicit `Program.Main` entry point
-  - Endpoint groups for OAuth, config, namespaces, tables, blob data
+  - Endpoint groups for config, namespaces, tables, blob data
   - Pass-through streaming async layer to underlying providers
 
 **Meeze.ThinIce.Auth** (adaptor)
   - Auth middleware validates Bearer tokens, sets TenantContext on request features
-  - Anonymous endpoints (token exchange, config) configurable via `ThinIceAuthOptions`
+  - Anonymous endpoints (e.g. config) configurable via `ThinIceAuthOptions`
   - Outside callers see a single token without ever knowing what the inner provider is
   - S3 access tokens, for example, never leave ThinIce
 
 **Meeze.ThinIce.Auth.Abstractions** (leaf)
-  - `IAuthProvider`, `TenantContext`, OAuth request/response models
+  - `IAuthProvider`, `TenantContext`
 
 **Meeze.ThinIce.Iceberg** (adaptor)
   - Iceberg proxy interfaces and models common to all providers
@@ -45,7 +45,6 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 
 | Method | Path | Status |
 |--------|------|--------|
-| POST | `/v1/oauth/tokens` | Implemented (form-encoded token exchange) |
 | GET | `/v1/config` | Implemented (catalog configuration) |
 | GET/POST/DELETE | `/v1/namespaces` | Implemented |
 | GET | `/v1/namespaces/{ns}` | Implemented |
@@ -80,13 +79,6 @@ dotnet publish src/Meeze.ThinIce.App -c Release
 The development config (`appsettings.Development.json`) ships with two tokens:
 - `freeze-ray-token-001` → tenant `SnowyConesIceCream`, user `mrfreeze@example.com`
 - `ice-age-token-002` → tenant `WayneEnterprises`, user `batman@example.org`
-
-**Exchange a token:**
-
-```bash
-curl -X POST http://localhost:5000/v1/oauth/tokens \
-  -d "grant_type=client_credentials&client_id=local-development&client_secret=freeze-ray-token-001"
-```
 
 **Get catalog config:**
 
@@ -148,6 +140,6 @@ These are not planned but are natural next steps:
 
 - **S3 + Glue provider** — `IIcebergCatalog` backed by AWS Glue, `IIcebergStorage` backed by S3 with IAM role assumption
 - **Keyed DI for multi-provider routing** — route different tenants to different backend providers via `TenantContext.ProviderKey`
-- **Real OIDC token issuance** — replace static tokens with JWT issuance/validation (currently deferred per ADR 002)
+- **JWT validation** — accept and validate JWTs, extract tenant+user from claims (per ADR 002)
 - **Namespace update** (PATCH properties) — not in the Iceberg REST minimum viable subset but commonly used
 - **Table commit/update** — `POST /v1/namespaces/{ns}/tables/{table}` for metadata updates

@@ -1,14 +1,12 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Meeze.ThinIce.Auth;
-using Meeze.ThinIce.Auth.Models;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
 public sealed partial class LocalDevAuthProvider : IAuthProvider
 {
     public const string Key = "LocalDev";
-    public const string LocalDevClientId = "local-development";
 
     private readonly Dictionary<string, (string Tenant, string User)> _tokens;
     private readonly ILogger<LocalDevAuthProvider> _logger;
@@ -48,28 +46,6 @@ public sealed partial class LocalDevAuthProvider : IAuthProvider
         return Task.FromResult<TenantContext?>(null);
     }
 
-    public Task<OAuthTokenResponse?> ExchangeTokenAsync(OAuthTokenRequest request, CancellationToken ct = default)
-    {
-        if (request.GrantType != OAuthTokenRequest.ClientCredentialsGrantType)
-            return Task.FromResult<OAuthTokenResponse?>(null);
-
-        if (!string.Equals(request.ClientId, LocalDevClientId, StringComparison.Ordinal))
-            return Task.FromResult<OAuthTokenResponse?>(null);
-
-        // For LocalDev, client_secret is the token and scope is the user
-        if (_tokens.TryGetValue(request.ClientSecret, out var identity))
-        {
-            LogTokenExchanged(identity.Tenant, identity.User);
-            return Task.FromResult<OAuthTokenResponse?>(
-                new OAuthTokenResponse(AccessToken: request.ClientSecret, Scope: identity.User));
-        }
-
-        return Task.FromResult<OAuthTokenResponse?>(null);
-    }
-
     [LoggerMessage(Level = LogLevel.Debug, Message = "LocalDev token validated for {Tenant}/{User}")]
     private partial void LogTokenValidated(string tenant, string user);
-
-    [LoggerMessage(Level = LogLevel.Debug, Message = "LocalDev token exchanged for {Tenant}/{User}")]
-    private partial void LogTokenExchanged(string tenant, string user);
 }

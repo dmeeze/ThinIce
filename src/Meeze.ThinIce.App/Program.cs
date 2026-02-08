@@ -20,7 +20,6 @@ public partial class Program
         {
             auth.AnonymousEndpoints =
             [
-                new("/v1/oauth/tokens", "POST"),
                 new("/v1/config", "GET")
             ];
         });
@@ -30,7 +29,6 @@ public partial class Program
 
         app.UseThinIceAuth();
 
-        app.MapOAuthEndpoints();
         app.MapConfigEndpoints();
         app.MapNamespaceEndpoints();
         app.MapTableEndpoints();
