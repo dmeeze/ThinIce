@@ -36,6 +36,7 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
   - Files-on-disk implementation for local development
   - `LocalDevCatalogResolver` caches per-tenant `LocalDevCatalog` instances
   - `LocalDevCatalog` implements single-tenant namespace and table CRUD on filesystem (partial class split: `.Namespaces.cs`, `.Tables.cs`)
+  - `LocalDevStorageResolver` caches per-tenant `LocalDevStorage` instances for blob I/O under `{tenant}/data/`
   - Isolates metadata/storage by tenant
   - Static tokens defined in config, eg:
     - `xxwefnuiwqbnergiqbiybaoysudbvcolas:MyCompany:me@mycompany.example`
@@ -56,10 +57,10 @@ This is a _service_ layer using bearer tokens, it is not a browser based webapp.
 | GET | `/v1/namespaces/{ns}` | Implemented |
 | GET/POST/DELETE | `/v1/namespaces/{ns}/tables` | Implemented |
 | GET | `/v1/namespaces/{ns}/tables/{table}` | Implemented |
-| GET/PUT | `/v1/data/{path}` | Phase 5 |
+| GET/PUT | `/v1/data/{path}` | Implemented (streaming blob I/O) |
 
 ## Current State
 
-**Phase 4 complete** — Auth, token exchange, namespace CRUD, table CRUD, and resolver pattern all implemented. `LocalDevCatalog` supports full namespace and table lifecycle (list, create, load, drop) with filesystem-backed storage. Table metadata written as versioned `v{n}.metadata.json` files. 62 tests passing, 0 warnings. Next: Phase 5 (Blob storage).
+**Phase 5 complete** — Auth, token exchange, namespace CRUD, table CRUD, resolver pattern, and blob storage all implemented. `LocalDevStorage` implements streaming file read/write/delete. `DataEndpoints` streams `GET /v1/data/{**path}` responses and `PUT /v1/data/{**path}` request bodies. 72 tests passing, 0 warnings. Next: Phase 6 (Integration tests).
 
 See `doc/PLAN.md` for the full implementation plan.

@@ -29,7 +29,7 @@ The projects follow an **adaptor/provider pattern**:
 - **Meeze.ThinIce.Auth** (adaptor) — `ThinIceAuthMiddleware` validates Bearer tokens via `IEnumerable<IAuthProvider>`, sets `TenantContext` on `HttpContext.Features`. Anonymous endpoints configured via `ThinIceAuthOptions`. `AuthJsonContext` for AOT error serialization.
 - **Meeze.ThinIce.Auth.Abstractions** (leaf) — `IAuthProvider`, `TenantContext` record, `OAuthTokenRequest`/`OAuthTokenResponse` models. Root namespace: `Meeze.ThinIce.Auth`.
 - **Meeze.ThinIce.Iceberg** (adaptor) — `IIcebergCatalog`, `IIcebergStorage`, `IIcebergCatalogResolver`, `IIcebergStorageResolver`, `NamespaceHelpers`, 14 Iceberg model records. Catalog/storage interfaces operate on a single tenant (no tenant parameter); resolver interfaces create/cache per-tenant instances.
-- **Meeze.ThinIce.Iceberg.LocalDev** (provider) — Files-on-disk implementation for local development (ADR 003). `LocalDevAuthProvider` maps static config tokens to tenant+user identity. `LocalDevCatalogResolver` implements `IIcebergCatalogResolver`, caching per-tenant `LocalDevCatalog` instances. `LocalDevCatalog` implements `IIcebergCatalog` with filesystem-backed namespace CRUD for a single tenant. `LocalDevJsonContext` for AOT disk I/O. `LocalDevOptions.ResolvedBasePath` defaults to `{LocalApplicationData}/ThinIce/data`.
+- **Meeze.ThinIce.Iceberg.LocalDev** (provider) — Files-on-disk implementation for local development (ADR 003). `LocalDevAuthProvider` maps static config tokens to tenant+user identity. `LocalDevCatalogResolver` implements `IIcebergCatalogResolver`, caching per-tenant `LocalDevCatalog` instances. `LocalDevCatalog` implements `IIcebergCatalog` with filesystem-backed namespace and table CRUD for a single tenant. `LocalDevStorageResolver` implements `IIcebergStorageResolver`, caching per-tenant `LocalDevStorage` instances. `LocalDevStorage` implements `IIcebergStorage` with filesystem-backed blob read/write/delete under `{tenant}/data/`. `LocalDevJsonContext` for AOT disk I/O. `LocalDevOptions.ResolvedBasePath` defaults to `{LocalApplicationData}/ThinIce/data`.
 
 ### Key Design Decisions
 
@@ -40,9 +40,9 @@ Architecture Decision Records are in `doc/`:
 
 ### Current State
 
-**Phase 4 complete.** Table CRUD implemented. `LocalDevCatalog` supports ListTables, CreateTable, LoadTable, DropTable with filesystem-backed storage under `{ns}/tables/{name}/metadata/v{n}.metadata.json`. `TableEndpoints` maps `/v1/namespaces/{ns}/tables` with 404/409 error handling. Next: Phase 5 (Blob storage).
+**Phase 5 complete.** Blob storage implemented. `LocalDevStorage` implements `IIcebergStorage` with filesystem-backed ReadFile/WriteFile/DeleteFile. `LocalDevStorageResolver` caches per-tenant storage instances. `DataEndpoints` maps `GET /v1/data/{**path}` (streaming response) and `PUT /v1/data/{**path}` (streaming request body) with 404 error handling. Next: Phase 6 (Integration tests).
 
-- 62 tests, all passing
+- 72 tests, all passing
 - 0 warnings, 0 errors
 
 ### Conventions

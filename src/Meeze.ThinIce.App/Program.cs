@@ -28,5 +28,6 @@ app.MapOAuthEndpoints();
 app.MapConfigEndpoints();
 app.MapNamespaceEndpoints();
 app.MapTableEndpoints();
+app.MapDataEndpoints();
 
 app.Run();

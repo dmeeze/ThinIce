@@ -16,6 +16,9 @@ public static class LocalDevServiceExtensions
         services.AddSingleton<LocalDevCatalogResolver>();
         services.AddSingleton<IIcebergCatalogResolver>(sp => sp.GetRequiredService<LocalDevCatalogResolver>());
 
+        services.AddSingleton<LocalDevStorageResolver>();
+        services.AddSingleton<IIcebergStorageResolver>(sp => sp.GetRequiredService<LocalDevStorageResolver>());
+
         return services;
     }
 }

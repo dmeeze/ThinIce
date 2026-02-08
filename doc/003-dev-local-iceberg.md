@@ -20,6 +20,6 @@ For development purposes - files on disk is simple. the rest can be built as plu
 
 {basePath}/{tenant}/namespaces/{ns}/properties.json
 {basePath}/{tenant}/namespaces/{ns}/tables/{table}/metadata/v{n}.metadata.json
-{basePath}/{tenant}/namespaces/{ns}/tables/{table}/data/
+{basePath}/{tenant}/data/{**path}
 
-Blob read/write streams directly through ThinIce endpoints (no presigned URLs).
+Blob read/write streams directly through ThinIce endpoints (`GET/PUT /v1/data/{**path}`, no presigned URLs). Storage is per-tenant via `IIcebergStorageResolver`.
