@@ -134,6 +134,22 @@ curl http://localhost:5000/v1/data/warehouse/events/data.parquet \
 
 See `doc/PLAN.md` for the full implementation plan.
 
+## Config Options
+
+The `/v1/config` endpoint returns catalog configuration to clients. Configurable via `appsettings.json`:
+
+```json
+{
+  "Config": {
+    "Prefix": "",
+    "OAuth2ServerUri": "https://localhost/"
+  }
+}
+```
+
+- **Prefix** — The path prefix returned to clients in `defaults["prefix"]`. Clients construct URLs as `http://{host}/v1/{prefix}/{path}`. When set (e.g. `"foo/bar"`), all authenticated endpoints are registered at `/v1/foo/bar/...`. Defaults to `""` (no prefix), meaning clients use `/v1/namespaces` etc. directly.
+- **OAuth2ServerUri** — Returned in `overrides["oauth2-server-uri"]`. Defaults to `https://localhost/`.
+
 ## Throttling
 
 Rate limiting is applied via ASP.NET Core Rate Limiting middleware (ADR 004):

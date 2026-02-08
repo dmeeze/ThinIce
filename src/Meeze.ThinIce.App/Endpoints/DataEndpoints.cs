@@ -6,9 +6,9 @@ namespace Meeze.ThinIce.App.Endpoints;
 
 public static class DataEndpoints
 {
-    public static RouteGroupBuilder MapDataEndpoints(this IEndpointRouteBuilder routes)
+    public static RouteGroupBuilder MapDataEndpoints(this IEndpointRouteBuilder routes, string? prefix)
     {
-        var group = routes.MapGroup("/v1/data").RequireRateLimiting("authenticated");
+        var group = routes.MapPrefixedGroup(prefix, "/data").RequireRateLimiting("authenticated");
 
         group.MapGet("/{**path}", async (HttpContext context, IIcebergStorageResolver resolver, string path) =>
         {

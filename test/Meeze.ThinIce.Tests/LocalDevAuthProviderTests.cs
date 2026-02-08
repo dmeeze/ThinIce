@@ -9,6 +9,7 @@ public class LocalDevAuthProviderTests
 {
     private static readonly LocalDevOptions TestOptions = new()
     {
+        BasePath = Path.Combine(Path.GetTempPath(), "ThinIce_AuthProviderTest"),
         Tokens =
         [
             "freeze-ray-token-001:SnowyConesIceCream:mrfreeze@example.com",

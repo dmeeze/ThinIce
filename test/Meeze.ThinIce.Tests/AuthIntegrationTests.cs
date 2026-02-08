@@ -31,7 +31,8 @@ public class AuthIntegrationTests
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         var config = await response.Content.ReadJsonAsync<CatalogConfig>();
-        Assert.AreEqual("v1", config.Defaults!["prefix"]);
+        Assert.AreEqual("", config.Defaults!["prefix"]);
+        Assert.AreEqual("https://localhost/", config.Overrides!["oauth2-server-uri"]);
     }
 
     [TestMethod]

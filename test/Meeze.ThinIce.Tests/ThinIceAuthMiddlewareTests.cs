@@ -26,6 +26,7 @@ public class ThinIceAuthMiddlewareTests
                     services.AddRouting();
                     var devOptions = Options.Create(new LocalDevOptions
                     {
+                        BasePath = Path.Combine(Path.GetTempPath(), "ThinIce_MiddlewareTest"),
                         Tokens = ["freeze-ray-token-001:SnowyConesIceCream:mrfreeze@example.com"]
                     });
                     services.AddSingleton(devOptions);

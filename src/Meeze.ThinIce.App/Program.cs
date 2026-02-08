@@ -27,6 +27,17 @@ public partial class Program
         });
         builder.Services.AddLocalDevProvider(builder.Configuration);
 
+        builder.Services.Configure<ConfigOptions>(options =>
+        {
+            var section = builder.Configuration.GetSection("Config");
+            var prefix = section["Prefix"];
+            if (prefix is not null)
+                options.Prefix = prefix;
+            var oauth2ServerUri = section["OAuth2ServerUri"];
+            if (oauth2ServerUri is not null)
+                options.OAuth2ServerUri = oauth2ServerUri;
+        });
+
         builder.Services.Configure<ThrottlingOptions>(options =>
         {
             var section = builder.Configuration.GetSection("Throttling");
@@ -69,10 +80,12 @@ public partial class Program
         app.UseThinIceAuth();
         app.UseRateLimiter();
 
+        var prefix = app.Configuration.GetSection("Config")["Prefix"];
+
         app.MapConfigEndpoints();
-        app.MapNamespaceEndpoints();
-        app.MapTableEndpoints();
-        app.MapDataEndpoints();
+        app.MapNamespaceEndpoints(prefix);
+        app.MapTableEndpoints(prefix);
+        app.MapDataEndpoints(prefix);
 
         app.Run();
     }

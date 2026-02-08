@@ -23,7 +23,8 @@ public class ThinIceWebApplicationFactory : WebApplicationFactory<Program>
             {
                 ["LocalDev:BasePath"] = _tempDir,
                 ["LocalDev:Tokens:0"] = "freeze-ray-token-001:SnowyConesIceCream:mrfreeze@example.com",
-                ["LocalDev:Tokens:1"] = "ice-age-token-002:WayneEnterprises:batman@example.org"
+                ["LocalDev:Tokens:1"] = "ice-age-token-002:WayneEnterprises:batman@example.org",
+                ["Config:Prefix"] = ""
             };
 
             if (_extraConfig is not null)

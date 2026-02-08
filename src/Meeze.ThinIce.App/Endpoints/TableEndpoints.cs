@@ -6,9 +6,9 @@ namespace Meeze.ThinIce.App.Endpoints;
 
 public static class TableEndpoints
 {
-    public static RouteGroupBuilder MapTableEndpoints(this IEndpointRouteBuilder routes)
+    public static RouteGroupBuilder MapTableEndpoints(this IEndpointRouteBuilder routes, string? prefix)
     {
-        var group = routes.MapGroup("/v1/namespaces/{ns}/tables").RequireRateLimiting("authenticated");
+        var group = routes.MapPrefixedGroup(prefix, "/namespaces/{ns}/tables").RequireRateLimiting("authenticated");
 
         group.MapGet("/", async (HttpContext context, IIcebergCatalogResolver resolver, string ns) =>
         {
