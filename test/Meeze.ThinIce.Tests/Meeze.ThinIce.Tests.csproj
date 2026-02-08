@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="10.0.1" />
     <PackageReference Include="MSTest" Version="4.0.1" />
   </ItemGroup>
 
@@ -17,8 +22,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Meeze.ThinIce.Auth\Meeze.ThinIce.Auth.csproj" />
     <ProjectReference Include="..\..\src\Meeze.ThinIce.Auth.Abstractions\Meeze.ThinIce.Auth.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Meeze.ThinIce.Iceberg\Meeze.ThinIce.Iceberg.csproj" />
+    <ProjectReference Include="..\..\src\Meeze.ThinIce.Iceberg.LocalDev\Meeze.ThinIce.Iceberg.LocalDev.csproj" />
   </ItemGroup>
 
 </Project>
