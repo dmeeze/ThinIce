@@ -28,8 +28,8 @@ The projects follow an **adaptor/provider pattern**:
 - **Meeze.ThinIce.App** — ASP.NET Minimal API host. `CreateSlimBuilder` with AOT publishing. Endpoint groups in `Endpoints/` directory. `AppJsonSerializerContext` for source-generated JSON.
 - **Meeze.ThinIce.Auth** (adaptor) — `ThinIceAuthMiddleware` validates Bearer tokens via `IEnumerable<IAuthProvider>`, sets `TenantContext` on `HttpContext.Features`. Anonymous endpoints configured via `ThinIceAuthOptions`. `AuthJsonContext` for AOT error serialization.
 - **Meeze.ThinIce.Auth.Abstractions** (leaf) — `IAuthProvider`, `TenantContext` record, `OAuthTokenRequest`/`OAuthTokenResponse` models. Root namespace: `Meeze.ThinIce.Auth`.
-- **Meeze.ThinIce.Iceberg** (adaptor) — `IIcebergCatalog`, `IIcebergStorage`, `NamespaceHelpers`, 14 Iceberg model records.
-- **Meeze.ThinIce.Iceberg.LocalDev** (provider) — Files-on-disk implementation for local development (ADR 003). `LocalDevAuthProvider` maps static config tokens to tenant+user identity. `LocalDevOptions.ResolvedBasePath` defaults to `{LocalApplicationData}/ThinIce/data`.
+- **Meeze.ThinIce.Iceberg** (adaptor) — `IIcebergCatalog`, `IIcebergStorage`, `IIcebergCatalogResolver`, `IIcebergStorageResolver`, `NamespaceHelpers`, 14 Iceberg model records. Catalog/storage interfaces operate on a single tenant (no tenant parameter); resolver interfaces create/cache per-tenant instances.
+- **Meeze.ThinIce.Iceberg.LocalDev** (provider) — Files-on-disk implementation for local development (ADR 003). `LocalDevAuthProvider` maps static config tokens to tenant+user identity. `LocalDevCatalogResolver` implements `IIcebergCatalogResolver`, caching per-tenant `LocalDevCatalog` instances. `LocalDevCatalog` implements `IIcebergCatalog` with filesystem-backed namespace CRUD for a single tenant. `LocalDevJsonContext` for AOT disk I/O. `LocalDevOptions.ResolvedBasePath` defaults to `{LocalApplicationData}/ThinIce/data`.
 
 ### Key Design Decisions
 
@@ -40,9 +40,9 @@ Architecture Decision Records are in `doc/`:
 
 ### Current State
 
-**Phase 2 complete.** Auth middleware, token exchange, and config endpoints are implemented and tested. The app starts, authenticates requests, and serves `/v1/oauth/tokens` (POST) and `/v1/config` (GET). Next: Phase 3 (Namespace CRUD).
+**Phase 3b complete.** Resolver pattern implemented. `IIcebergCatalogResolver`/`IIcebergStorageResolver` create per-tenant catalog/storage instances; `IIcebergCatalog`/`IIcebergStorage` operate on a single tenant (no tenant parameter). `LocalDevCatalogResolver` caches `LocalDevCatalog` per tenant. Endpoints resolve `IIcebergCatalogResolver`, call `GetCatalog(tenant)`. Next: Phase 4 (Table CRUD).
 
-- 39 tests, all passing
+- 51 tests, all passing
 - 0 warnings, 0 errors
 
 ### Conventions

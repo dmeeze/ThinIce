@@ -13,6 +13,9 @@ public static class LocalDevServiceExtensions
         services.AddSingleton<LocalDevAuthProvider>();
         services.AddSingleton<IAuthProvider>(sp => sp.GetRequiredService<LocalDevAuthProvider>());
 
+        services.AddSingleton<LocalDevCatalogResolver>();
+        services.AddSingleton<IIcebergCatalogResolver>(sp => sp.GetRequiredService<LocalDevCatalogResolver>());
+
         return services;
     }
 }

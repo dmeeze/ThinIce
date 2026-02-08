@@ -26,5 +26,6 @@ app.UseThinIceAuth();
 
 app.MapOAuthEndpoints();
 app.MapConfigEndpoints();
+app.MapNamespaceEndpoints();
 
 app.Run();
