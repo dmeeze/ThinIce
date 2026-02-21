@@ -2,12 +2,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public sealed partial class LocalDevStorage : IIcebergStorage
+public sealed partial class Storage : IStorage
 {
     private readonly string _dataRoot;
-    private readonly ILogger<LocalDevStorage> _logger;
+    private readonly ILogger<Storage> _logger;
 
-    public LocalDevStorage(string dataRoot, ILogger<LocalDevStorage> logger)
+    public Storage(string dataRoot, ILogger<Storage> logger)
     {
         _dataRoot = dataRoot;
         _logger = logger;

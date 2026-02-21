@@ -20,9 +20,7 @@ By proxing multiple back-end services (S3, Snowflake, etc), in a tenanted fashio
 ### Middleware and Routing
 
 - auth middleware runs first, validates bearer token, sets scoped TenantContext (tenant + user)
-- each provider registers IIcebergCatalogResolver, IIcebergStorageResolver, IAuthProvider via DI
-- resolvers create/cache per-tenant IIcebergCatalog/IIcebergStorage instances; catalog and storage interfaces operate on a single tenant (no tenant parameter)
-- multi-provider routing (different backend per tenant) deferred — single provider active at startup for now
+- `IIcebergRouter` uses that tenant information to find the `IIcebergProvider`
 
 ### Minimal API over MVC Controllers
 

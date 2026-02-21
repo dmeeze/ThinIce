@@ -10,10 +10,10 @@ public static class DataEndpoints
     {
         var group = routes.MapPrefixedGroup(prefix, "/data").RequireRateLimiting("authenticated");
 
-        group.MapGet("/{**path}", async (HttpContext context, IIcebergStorageResolver resolver, string path) =>
+        group.MapGet("/{**path}", async (HttpContext context, IIcebergRouter router, string path) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
-            var storage = resolver.GetStorage(tenant.Tenant);
+            var storage = router.GetProvider(tenant.Tenant).GetStorage(tenant.Tenant);
             try
             {
                 var stream = await storage.ReadFileAsync(path, context.RequestAborted);
@@ -30,10 +30,10 @@ public static class DataEndpoints
             }
         });
 
-        group.MapPut("/{**path}", async (HttpContext context, IIcebergStorageResolver resolver, string path) =>
+        group.MapPut("/{**path}", async (HttpContext context, IIcebergRouter router, string path) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
-            var storage = resolver.GetStorage(tenant.Tenant);
+            var storage = router.GetProvider(tenant.Tenant).GetStorage(tenant.Tenant);
             await storage.WriteFileAsync(path, context.Request.Body, context.RequestAborted);
             return Results.NoContent();
         });

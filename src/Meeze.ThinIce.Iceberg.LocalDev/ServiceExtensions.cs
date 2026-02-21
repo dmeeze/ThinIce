@@ -4,11 +4,11 @@ using Meeze.ThinIce.Auth;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public static class LocalDevServiceExtensions
+public static class ServiceExtensions
 {
     public static IServiceCollection AddLocalDevProvider(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<LocalDevOptions>(options =>
+        services.Configure<Options>(options =>
         {
             var section = configuration.GetSection("LocalDev");
             options.BasePath = section["BasePath"];
@@ -26,14 +26,11 @@ public static class LocalDevServiceExtensions
             }
         });
 
-        services.AddSingleton<LocalDevAuthProvider>();
-        services.AddSingleton<IAuthProvider>(sp => sp.GetRequiredService<LocalDevAuthProvider>());
+        services.AddSingleton<AuthProvider>();
+        services.AddSingleton<IAuthProvider>(sp => sp.GetRequiredService<AuthProvider>());
 
-        services.AddSingleton<LocalDevCatalogResolver>();
-        services.AddSingleton<IIcebergCatalogResolver>(sp => sp.GetRequiredService<LocalDevCatalogResolver>());
-
-        services.AddSingleton<LocalDevStorageResolver>();
-        services.AddSingleton<IIcebergStorageResolver>(sp => sp.GetRequiredService<LocalDevStorageResolver>());
+        // Register provider for multi-provider routing
+        services.AddSingleton<IIcebergProvider, Provider>();
 
         return services;
     }

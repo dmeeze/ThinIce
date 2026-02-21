@@ -1,7 +1,6 @@
-using System.Threading.RateLimiting;
-using Meeze.ThinIce.App;
 using Meeze.ThinIce.App.Endpoints;
 using Meeze.ThinIce.Auth;
+using Meeze.ThinIce.Iceberg;
 using Meeze.ThinIce.Iceberg.LocalDev;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -26,6 +25,9 @@ public partial class Program
             ];
         });
         builder.Services.AddLocalDevProvider(builder.Configuration);
+
+        builder.Services.AddHttpContextAccessor();
+        builder.Services.AddSingleton<IIcebergRouter, DefaultIcebergRouter>();
 
         builder.Services.Configure<ConfigOptions>(options =>
         {

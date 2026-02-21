@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Meeze.ThinIce.Auth.Abstractions\Meeze.ThinIce.Auth.Abstractions.csproj" />
+    <ProjectReference Include="..\Meeze.ThinIce.Abstractions\Meeze.ThinIce.Abstractions.csproj" />
     <ProjectReference Include="..\Meeze.ThinIce.Iceberg\Meeze.ThinIce.Iceberg.csproj" />
   </ItemGroup>
 

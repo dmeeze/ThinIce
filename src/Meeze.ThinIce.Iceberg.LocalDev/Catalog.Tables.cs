@@ -4,7 +4,7 @@ using Meeze.ThinIce.Iceberg.Models;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public sealed partial class LocalDevCatalog
+public sealed partial class Catalog
 {
     private string TablesPath(string[] namespaceLevels) =>
         Path.Combine(NamespacePath(namespaceLevels), "tables");
@@ -90,7 +90,7 @@ public sealed partial class LocalDevCatalog
 
             var metadataFile = Path.Combine(metadataDir, "v1.metadata.json");
             using var stream = File.Create(metadataFile);
-            JsonSerializer.Serialize(stream, metadata, LocalDevJsonContext.Default.TableMetadata);
+            JsonSerializer.Serialize(stream, metadata, JsonContext.Default.TableMetadata);
 
             LogTableCreated(request.Name, string.Join(".", namespaceLevels));
             return Task.FromResult(new LoadTableResponse(metadata, metadataFile));
@@ -122,7 +122,7 @@ public sealed partial class LocalDevCatalog
                 .First();
 
             using var stream = File.OpenRead(latestFile);
-            var metadata = JsonSerializer.Deserialize(stream, LocalDevJsonContext.Default.TableMetadata)!;
+            var metadata = JsonSerializer.Deserialize(stream, JsonContext.Default.TableMetadata)!;
 
             return Task.FromResult(new LoadTableResponse(metadata, latestFile));
         }

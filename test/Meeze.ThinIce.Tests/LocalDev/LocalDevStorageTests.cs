@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Meeze.ThinIce.Iceberg.LocalDev;
 
-namespace Meeze.ThinIce.Tests;
+namespace Meeze.ThinIce.Iceberg.LocalDev.Tests;
 
 [TestClass]
-public class LocalDevStorageTests
+public class StorageTests
 {
     private string _tempDir = null!;
     private string _dataRoot = null!;
-    private LocalDevStorage _storage = null!;
+    private Storage _storage = null!;
 
     [TestInitialize]
     public void Setup()
@@ -16,7 +15,7 @@ public class LocalDevStorageTests
         _tempDir = Path.Combine(Path.GetTempPath(), $"ThinIce_Test_{Guid.NewGuid():N}");
         _dataRoot = Path.Combine(_tempDir, "data");
         Directory.CreateDirectory(_tempDir);
-        _storage = new LocalDevStorage(_dataRoot, NullLogger<LocalDevStorage>.Instance);
+        _storage = new Storage(_dataRoot, NullLogger<Storage>.Instance);
     }
 
     [TestCleanup]

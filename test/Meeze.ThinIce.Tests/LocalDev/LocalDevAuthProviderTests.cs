@@ -1,13 +1,11 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
-using Meeze.ThinIce.Iceberg.LocalDev;
 
-namespace Meeze.ThinIce.Tests;
+namespace Meeze.ThinIce.Iceberg.LocalDev.Tests;
 
 [TestClass]
-public class LocalDevAuthProviderTests
+public class AuthProviderTests
 {
-    private static readonly LocalDevOptions TestOptions = new()
+    private static readonly Meeze.ThinIce.Iceberg.LocalDev.Options TestOptions = new()
     {
         BasePath = Path.Combine(Path.GetTempPath(), "ThinIce_AuthProviderTest"),
         Tokens =
@@ -17,16 +15,16 @@ public class LocalDevAuthProviderTests
         ]
     };
 
-    private static LocalDevAuthProvider CreateProvider(LocalDevOptions? options = null)
+    private static AuthProvider CreateProvider(Meeze.ThinIce.Iceberg.LocalDev.Options? options = null)
     {
-        var opts = Options.Create(options ?? TestOptions);
-        return new LocalDevAuthProvider(opts, NullLogger<LocalDevAuthProvider>.Instance);
+        var opts = Microsoft.Extensions.Options.Options.Create(options ?? TestOptions);
+        return new AuthProvider(opts, NullLogger<AuthProvider>.Instance);
     }
 
     [TestMethod]
     public void ParseTokens_ValidEntries_ParsesCorrectly()
     {
-        var result = LocalDevAuthProvider.ParseTokens(TestOptions.Tokens);
+        var result = AuthProvider.ParseTokens(TestOptions.Tokens);
 
         Assert.HasCount(2, result);
         Assert.AreEqual(("SnowyConesIceCream", "mrfreeze@example.com"), result["freeze-ray-token-001"]);
@@ -36,7 +34,7 @@ public class LocalDevAuthProviderTests
     [TestMethod]
     public void ParseTokens_MalformedEntry_Skipped()
     {
-        var result = LocalDevAuthProvider.ParseTokens(["good-token:Tenant:user@example.com", "bad-entry-no-colons"]);
+        var result = AuthProvider.ParseTokens(["good-token:Tenant:user@example.com", "bad-entry-no-colons"]);
 
         Assert.HasCount(1, result);
         Assert.IsTrue(result.ContainsKey("good-token"));
@@ -45,7 +43,7 @@ public class LocalDevAuthProviderTests
     [TestMethod]
     public void ParseTokens_EmptyList_ReturnsEmpty()
     {
-        var result = LocalDevAuthProvider.ParseTokens([]);
+        var result = AuthProvider.ParseTokens([]);
         Assert.IsEmpty(result);
     }
 

@@ -26,4 +26,4 @@ For development purposes — files on disk is simple. The rest can be built as p
 
 Default `basePath` is `{LocalApplicationData}/ThinIce/data`, configurable via `LocalDev:BasePath` in app config.
 
-Blob read/write streams directly through ThinIce endpoints (`GET/PUT /v1/data/{**path}`, no presigned URLs). Storage is per-tenant via `IIcebergStorageResolver`.
+Blob read/write streams directly through ThinIce endpoints (`GET/PUT /v1/data/{**path}`, no presigned URLs). Storage is per-tenant via the LocalDev `Provider`/`Resolver` pattern.

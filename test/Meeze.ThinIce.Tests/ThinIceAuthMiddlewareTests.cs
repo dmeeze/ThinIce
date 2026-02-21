@@ -24,15 +24,15 @@ public class ThinIceAuthMiddlewareTests
                 webBuilder.ConfigureServices(services =>
                 {
                     services.AddRouting();
-                    var devOptions = Options.Create(new LocalDevOptions
+                    var devOptions = Microsoft.Extensions.Options.Options.Create(new Meeze.ThinIce.Iceberg.LocalDev.Options
                     {
                         BasePath = Path.Combine(Path.GetTempPath(), "ThinIce_MiddlewareTest"),
                         Tokens = ["freeze-ray-token-001:SnowyConesIceCream:mrfreeze@example.com"]
                     });
                     services.AddSingleton(devOptions);
                     services.AddSingleton<IAuthProvider>(sp =>
-                        new LocalDevAuthProvider(sp.GetRequiredService<IOptions<LocalDevOptions>>(),
-                            NullLogger<LocalDevAuthProvider>.Instance));
+                        new AuthProvider(sp.GetRequiredService<IOptions<Meeze.ThinIce.Iceberg.LocalDev.Options>>(),
+                            NullLogger<AuthProvider>.Instance));
                     services.AddThinIceAuth(auth =>
                     {
                         auth.AnonymousEndpoints =

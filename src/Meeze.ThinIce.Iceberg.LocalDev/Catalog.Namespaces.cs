@@ -4,7 +4,7 @@ using Meeze.ThinIce.Iceberg.Models;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public sealed partial class LocalDevCatalog
+public sealed partial class Catalog
 {
     public Task<ListNamespacesResponse> ListNamespacesAsync(CancellationToken ct = default)
     {
@@ -43,7 +43,7 @@ public sealed partial class LocalDevCatalog
             var properties = request.Properties ?? new Dictionary<string, string>();
             var propsFile = Path.Combine(nsPath, "properties.json");
             using var stream = File.Create(propsFile);
-            JsonSerializer.Serialize(stream, properties, LocalDevJsonContext.Default.DictionaryStringString);
+            JsonSerializer.Serialize(stream, properties, JsonContext.Default.DictionaryStringString);
 
             var result = new NamespaceDetail(request.Namespace, properties);
             LogNamespaceCreated(string.Join(".", request.Namespace));
@@ -69,7 +69,7 @@ public sealed partial class LocalDevCatalog
             if (File.Exists(propsFile))
             {
                 using var stream = File.OpenRead(propsFile);
-                properties = JsonSerializer.Deserialize(stream, LocalDevJsonContext.Default.DictionaryStringString);
+                properties = JsonSerializer.Deserialize(stream, JsonContext.Default.DictionaryStringString);
             }
 
             return Task.FromResult(new NamespaceDetail(namespaceLevels, properties));

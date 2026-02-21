@@ -10,18 +10,18 @@ public static class NamespaceEndpoints
     {
         var group = routes.MapPrefixedGroup(prefix, "/namespaces").RequireRateLimiting("authenticated");
 
-        group.MapGet("/", async (HttpContext context, IIcebergCatalogResolver resolver) =>
+        group.MapGet("/", async (HttpContext context, IIcebergRouter router) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
-            var catalog = resolver.GetCatalog(tenant.Tenant);
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
             var result = await catalog.ListNamespacesAsync(context.RequestAborted);
             return Results.Json(result, AppJsonSerializerContext.Default.ListNamespacesResponse);
         });
 
-        group.MapPost("/", async (HttpContext context, IIcebergCatalogResolver resolver, CreateNamespaceRequest request) =>
+        group.MapPost("/", async (HttpContext context, IIcebergRouter router, CreateNamespaceRequest request) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
-            var catalog = resolver.GetCatalog(tenant.Tenant);
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
             try
             {
                 var result = await catalog.CreateNamespaceAsync(request, context.RequestAborted);
@@ -38,10 +38,10 @@ public static class NamespaceEndpoints
             }
         });
 
-        group.MapGet("/{ns}", async (HttpContext context, IIcebergCatalogResolver resolver, string ns) =>
+        group.MapGet("/{ns}", async (HttpContext context, IIcebergRouter router, string ns) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
-            var catalog = resolver.GetCatalog(tenant.Tenant);
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
             var levels = NamespaceHelpers.Parse(ns);
             try
             {
@@ -59,10 +59,10 @@ public static class NamespaceEndpoints
             }
         });
 
-        group.MapDelete("/{ns}", async (HttpContext context, IIcebergCatalogResolver resolver, string ns) =>
+        group.MapDelete("/{ns}", async (HttpContext context, IIcebergRouter router, string ns) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
-            var catalog = resolver.GetCatalog(tenant.Tenant);
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
             var levels = NamespaceHelpers.Parse(ns);
             try
             {

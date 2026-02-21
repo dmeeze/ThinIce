@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Headers;
-using System.Text;
 
 namespace Meeze.ThinIce.Tests;
 

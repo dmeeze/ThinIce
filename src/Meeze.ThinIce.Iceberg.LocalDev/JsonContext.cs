@@ -5,4 +5,4 @@ namespace Meeze.ThinIce.Iceberg.LocalDev;
 
 [JsonSerializable(typeof(Dictionary<string, string>))]
 [JsonSerializable(typeof(TableMetadata))]
-internal partial class LocalDevJsonContext : JsonSerializerContext;
+internal partial class JsonContext : JsonSerializerContext;

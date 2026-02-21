@@ -2,13 +2,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public sealed partial class LocalDevCatalog : IIcebergCatalog, IDisposable
+public sealed partial class Catalog : ICatalog, IDisposable
 {
     private readonly string _namespacesRoot;
-    private readonly ILogger<LocalDevCatalog> _logger;
+    private readonly ILogger<Catalog> _logger;
     private readonly ReaderWriterLockSlim _lock = new();
 
-    public LocalDevCatalog(string namespacesRoot, ILogger<LocalDevCatalog> logger)
+    public Catalog(string namespacesRoot, ILogger<Catalog> logger)
     {
         _namespacesRoot = namespacesRoot;
         _logger = logger;

@@ -1,6 +1,6 @@
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public sealed class LocalDevOptions
+public sealed class Options
 {
     public string? BasePath { get; set; }
     public List<string> Tokens { get; set; } = [];

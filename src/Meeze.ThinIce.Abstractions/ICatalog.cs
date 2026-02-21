@@ -2,7 +2,7 @@ using Meeze.ThinIce.Iceberg.Models;
 
 namespace Meeze.ThinIce.Iceberg;
 
-public interface IIcebergCatalog
+public interface ICatalog
 {
     Task<ListNamespacesResponse> ListNamespacesAsync(CancellationToken ct = default);
     Task<NamespaceDetail> CreateNamespaceAsync(CreateNamespaceRequest request, CancellationToken ct = default);

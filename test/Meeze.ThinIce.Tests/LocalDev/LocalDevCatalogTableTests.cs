@@ -1,15 +1,14 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Meeze.ThinIce.Iceberg.LocalDev;
 using Meeze.ThinIce.Iceberg.Models;
 
-namespace Meeze.ThinIce.Tests;
+namespace Meeze.ThinIce.Iceberg.LocalDev.Tests;
 
 [TestClass]
-public class LocalDevCatalogTableTests
+public class CatalogTableTests
 {
     private string _tempDir = null!;
     private string _namespacesRoot = null!;
-    private LocalDevCatalog _catalog = null!;
+    private Catalog _catalog = null!;
 
     private static readonly string[] TestNamespace = ["arctic-vault"];
 
@@ -25,7 +24,7 @@ public class LocalDevCatalogTableTests
         _tempDir = Path.Combine(Path.GetTempPath(), $"ThinIce_Test_{Guid.NewGuid():N}");
         _namespacesRoot = Path.Combine(_tempDir, "namespaces");
         Directory.CreateDirectory(_tempDir);
-        _catalog = new LocalDevCatalog(_namespacesRoot, NullLogger<LocalDevCatalog>.Instance);
+        _catalog = new Catalog(_namespacesRoot, NullLogger<Catalog>.Instance);
     }
 
     [TestCleanup]

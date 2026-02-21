@@ -4,16 +4,16 @@ using Meeze.ThinIce.Auth;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 
-public sealed partial class LocalDevAuthProvider : IAuthProvider
+public sealed partial class AuthProvider : IAuthProvider
 {
     public const string Key = "LocalDev";
 
     private readonly Dictionary<string, (string Tenant, string User)> _tokens;
-    private readonly ILogger<LocalDevAuthProvider> _logger;
+    private readonly ILogger<AuthProvider> _logger;
 
     public string ProviderKey => Key;
 
-    public LocalDevAuthProvider(IOptions<LocalDevOptions> options, ILogger<LocalDevAuthProvider> logger)
+    public AuthProvider(IOptions<Options> options, ILogger<AuthProvider> logger)
     {
         _logger = logger;
         _tokens = ParseTokens(options.Value.Tokens);
