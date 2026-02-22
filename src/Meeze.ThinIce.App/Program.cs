@@ -87,6 +87,7 @@ public partial class Program
         app.MapConfigEndpoints();
         app.MapNamespaceEndpoints(prefix);
         app.MapTableEndpoints(prefix);
+        app.MapCatalogEndpoints(prefix);
         app.MapDataEndpoints(prefix);
 
         app.Run();

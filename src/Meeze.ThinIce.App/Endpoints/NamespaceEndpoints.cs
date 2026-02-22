@@ -59,6 +59,75 @@ public static class NamespaceEndpoints
             }
         });
 
+        group.MapPost("/{ns}/properties", async (HttpContext context, IIcebergRouter router, string ns, UpdateNamespacePropertiesRequest request) =>
+        {
+            var tenant = context.Features.Get<TenantContext>()!;
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
+            var levels = NamespaceHelpers.Parse(ns);
+            try
+            {
+                var result = await catalog.UpdateNamespacePropertiesAsync(levels, request.Updates, request.Removals, context.RequestAborted);
+                return Results.Json(result, AppJsonSerializerContext.Default.NamespaceDetail);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return Results.Json(
+                    new IcebergErrorResponse(new IcebergError(
+                        $"Namespace not found: {ns}",
+                        "NoSuchNamespaceException", 404)),
+                    AppJsonSerializerContext.Default.IcebergErrorResponse,
+                    statusCode: 404);
+            }
+        });
+
+        group.MapPost("/{ns}/register", async (HttpContext context, IIcebergRouter router, string ns, RegisterTableRequest request) =>
+        {
+            var tenant = context.Features.Get<TenantContext>()!;
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
+            var levels = NamespaceHelpers.Parse(ns);
+            try
+            {
+                var result = await catalog.RegisterTableAsync(levels, request.Name, request.MetadataLocation, context.RequestAborted);
+                return Results.Json(result, AppJsonSerializerContext.Default.LoadTableResponse);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return Results.Json(
+                    new IcebergErrorResponse(new IcebergError(
+                        $"Namespace not found: {ns}",
+                        "NoSuchNamespaceException", 404)),
+                    AppJsonSerializerContext.Default.IcebergErrorResponse,
+                    statusCode: 404);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return Results.Json(
+                    new IcebergErrorResponse(new IcebergError(
+                        ex.Message,
+                        "NoSuchTableException", 404)),
+                    AppJsonSerializerContext.Default.IcebergErrorResponse,
+                    statusCode: 404);
+            }
+            catch (InvalidOperationException)
+            {
+                return Results.Json(
+                    new IcebergErrorResponse(new IcebergError(
+                        $"Table already exists: {request.Name}",
+                        "AlreadyExistsException", 409)),
+                    AppJsonSerializerContext.Default.IcebergErrorResponse,
+                    statusCode: 409);
+            }
+        });
+
+        group.MapMethods("/{ns}", [HttpMethods.Head], async (HttpContext context, IIcebergRouter router, string ns) =>
+        {
+            var tenant = context.Features.Get<TenantContext>()!;
+            var catalog = router.GetProvider(tenant.Tenant).GetCatalog(tenant.Tenant);
+            var levels = NamespaceHelpers.Parse(ns);
+            var exists = await catalog.NamespaceExistsAsync(levels, context.RequestAborted);
+            return exists ? Results.NoContent() : Results.NotFound();
+        });
+
         group.MapDelete("/{ns}", async (HttpContext context, IIcebergRouter router, string ns) =>
         {
             var tenant = context.Features.Get<TenantContext>()!;
