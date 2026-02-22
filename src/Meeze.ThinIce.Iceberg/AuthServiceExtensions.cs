@@ -1,7 +1,8 @@
+using Meeze.ThinIce;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Meeze.ThinIce.Auth;
+namespace Meeze.ThinIce.Iceberg;
 
 public static class AuthServiceExtensions
 {

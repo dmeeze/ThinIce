@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Meeze.ThinIce.App\Meeze.ThinIce.App.csproj" />
-    <ProjectReference Include="..\..\src\Meeze.ThinIce.Auth\Meeze.ThinIce.Auth.csproj" />
     <ProjectReference Include="..\..\src\Meeze.ThinIce.Abstractions\Meeze.ThinIce.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Meeze.ThinIce.Iceberg\Meeze.ThinIce.Iceberg.csproj" />
     <ProjectReference Include="..\..\src\Meeze.ThinIce.Iceberg.LocalDev\Meeze.ThinIce.Iceberg.LocalDev.csproj" />

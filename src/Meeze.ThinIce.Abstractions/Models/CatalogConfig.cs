@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Meeze.ThinIce.Iceberg.Models;
+namespace Meeze.ThinIce.Models;
 
 public record CatalogConfig(
     [property: JsonPropertyName("defaults")] Dictionary<string, string>? Defaults = null,

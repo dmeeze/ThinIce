@@ -1,4 +1,4 @@
-namespace Meeze.ThinIce.Auth;
+namespace Meeze.ThinIce;
 
 public record TenantContext(string Tenant, string User, string ProviderKey)
 {

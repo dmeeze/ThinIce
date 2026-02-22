@@ -5,10 +5,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Meeze.ThinIce;
+using Meeze.ThinIce.Iceberg;
+using Meeze.ThinIce.Iceberg.LocalDev;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Meeze.ThinIce.Auth;
-using Meeze.ThinIce.Iceberg.LocalDev;
 
 namespace Meeze.ThinIce.Tests;
 

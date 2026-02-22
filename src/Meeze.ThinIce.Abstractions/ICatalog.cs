@@ -1,4 +1,4 @@
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 
 namespace Meeze.ThinIce.Iceberg;
 

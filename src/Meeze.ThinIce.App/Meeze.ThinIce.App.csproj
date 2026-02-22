@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Meeze.ThinIce.Auth\Meeze.ThinIce.Auth.csproj" />
+    <ProjectReference Include="..\Meeze.ThinIce.Abstractions\Meeze.ThinIce.Abstractions.csproj" />
     <ProjectReference Include="..\Meeze.ThinIce.Iceberg\Meeze.ThinIce.Iceberg.csproj" />
     <ProjectReference Include="..\Meeze.ThinIce.Iceberg.LocalDev\Meeze.ThinIce.Iceberg.LocalDev.csproj" />
   </ItemGroup>

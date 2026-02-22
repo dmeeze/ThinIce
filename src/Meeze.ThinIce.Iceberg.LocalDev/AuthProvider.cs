@@ -1,6 +1,6 @@
+using Meeze.ThinIce;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Meeze.ThinIce.Auth;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 

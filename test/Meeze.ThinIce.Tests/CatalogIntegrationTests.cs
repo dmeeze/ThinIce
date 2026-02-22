@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 
 namespace Meeze.ThinIce.Tests;
 

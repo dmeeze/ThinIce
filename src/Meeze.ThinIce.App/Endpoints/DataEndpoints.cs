@@ -1,6 +1,6 @@
-using Meeze.ThinIce.Auth;
+using Meeze.ThinIce;
 using Meeze.ThinIce.Iceberg;
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 
 namespace Meeze.ThinIce.App.Endpoints;
 

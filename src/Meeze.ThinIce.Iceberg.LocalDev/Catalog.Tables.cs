@@ -1,6 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev;
 

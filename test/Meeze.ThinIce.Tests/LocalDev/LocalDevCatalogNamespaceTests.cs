@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Logging.Abstractions;
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 
 namespace Meeze.ThinIce.Iceberg.LocalDev.Tests;
 

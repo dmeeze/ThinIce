@@ -1,11 +1,12 @@
 using System.Net;
 using System.Text.Json;
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce;
+using Meeze.ThinIce.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Meeze.ThinIce.Auth;
+namespace Meeze.ThinIce.Iceberg;
 
 public sealed partial class ThinIceAuthMiddleware
 {
@@ -34,7 +35,7 @@ public sealed partial class ThinIceAuthMiddleware
             return;
         }
 
-        var authHeader = context.Request.Headers.Authorization.ToString();
+        var authHeader = context.Request.Headers["Authorization"].ToString();
         if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
         {
             await WriteUnauthorized(context, "Missing or invalid Authorization header");

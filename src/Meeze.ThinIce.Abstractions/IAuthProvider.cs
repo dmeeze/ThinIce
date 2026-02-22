@@ -1,4 +1,4 @@
-namespace Meeze.ThinIce.Auth;
+namespace Meeze.ThinIce;
 
 public interface IAuthProvider
 {

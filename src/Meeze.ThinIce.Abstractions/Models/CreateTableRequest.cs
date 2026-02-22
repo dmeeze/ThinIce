@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Meeze.ThinIce.Iceberg.Models;
+namespace Meeze.ThinIce.Models;
 
 public record CreateTableRequest(
     [property: JsonPropertyName("name")] string Name,

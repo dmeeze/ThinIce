@@ -1,5 +1,5 @@
 using System.Text.Json.Serialization;
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 
 namespace Meeze.ThinIce.App;
 

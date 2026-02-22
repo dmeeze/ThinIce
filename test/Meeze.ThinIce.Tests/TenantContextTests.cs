@@ -1,4 +1,4 @@
-using Meeze.ThinIce.Auth;
+using Meeze.ThinIce;
 
 namespace Meeze.ThinIce.Tests;
 

@@ -1,4 +1,4 @@
-using Meeze.ThinIce.Iceberg.Models;
+using Meeze.ThinIce.Models;
 using Microsoft.Extensions.Options;
 
 namespace Meeze.ThinIce.App.Endpoints;
